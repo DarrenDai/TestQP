@@ -1,0 +1,8 @@
+﻿<Window x:Class="TestQP.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="650" Width="1024">
+  <Grid>
+    <TextBox Text="{Binding Output}" IsReadOnly="True"/>
+  </Grid>
+</Window>
