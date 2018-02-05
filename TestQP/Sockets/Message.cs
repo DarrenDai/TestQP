@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TestQP.Constants;
 using TestQP.Converters;
 using TestQP.Sockets.BodyDefinitions;
+using TestQP.Utils;
 
 namespace TestQP.Sockets
 {
@@ -76,7 +77,7 @@ namespace TestQP.Sockets
             Array.Copy(body, 0, combineArr, header.Length + 1, body.Length);
 
             //hash
-            _hashCode = GetHashCode(header, body);
+            _hashCode = DataVerification.GetVerifyCode(header, body);
 
             //marks
             combineArr[0] = _flagByte;
@@ -101,7 +102,7 @@ namespace TestQP.Sockets
 
             MessageBody = GetMessageBody();
             var bodyBytes = new byte[bytes.Length - 2 - MessageHeader.HeaderLength - 1];
-            Array.Copy(bytes, 1 + MessageHeader.HeaderLength, headerBytes, 0, bodyBytes.Length);
+            Array.Copy(bytes, 1 + MessageHeader.HeaderLength, bodyBytes, 0, bodyBytes.Length);
             MessageBody.FromBytes(bodyBytes);
 
             _hashCode = bytes[bytes.Length - 2];
@@ -120,24 +121,9 @@ namespace TestQP.Sockets
             //return ByteConverter.Uint16ToBytes(bodyProperty);
         }
 
-        private byte GetHashCode(byte[] header, byte[] body)
-        {
-            byte hash = header[0];
-            for (int i = 1; i < header.Length; i++)
-            {
-                hash ^= header[i];
-            }
-
-            for (int i = 0; i < body.Length; i++)
-            {
-                hash ^= body[i];
-            }
-
-            return hash;
-        }
-
         private bool VerifyHashCode(byte[] message)
         {
+            //DataVerification.Verify();
             return true;
         }
 

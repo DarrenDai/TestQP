@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestQP.Constants;
 using TestQP.Converters;
+using TestQP.Extensions;
 
 namespace TestQP.Sockets
 {
@@ -16,33 +18,47 @@ namespace TestQP.Sockets
         private UInt16 _messageProperty = 0x0025;//WORD
         private byte _protocolVersion = 0x01;
         private byte _token = 0x00;
-        private UInt32 _stationId = 0x6000;//BCD 4
-        private UInt16 _sequenceNO = 0x0001;//WORD
+        private UInt32 _stationId = 0x60000001;//BCD 4
+        private UInt16 _sequenceNO = 0x0004;//WORD
 
         public const uint HeaderLength = (2 + 2 + 1 + 1 + 4 + 2); //12 bytes
         private byte[] _header = new byte[HeaderLength];
+        #endregion
+
+        #region Constructor
+
+        public MessageHeader()
+        {
+            MessageId = (UInt16)FunctionEnum.CLIENT_LOGON;
+            MessageProperty = 0x0025;
+            ProtocolVersion = 0x01;
+            Token = 0x00;
+            StationId = 0x60000001;
+            SequenceNO = 0x0004;
+        }
+
         #endregion
 
         #region Public properties
 
         public UInt16 MessageId
         {
-            get { return GetPropertyWithOffset(0); }
+            get { return _header.GetUInt16PropertyWithOffset(0); }
             set
             {
                 _messageId = value;
 
-                SetHeaderValue(0, value);
+                _header.SetUInt16PropertyWithOffset(0, value);
             }
         }
 
         public UInt16 MessageProperty
         {
-            get { return GetPropertyWithOffset(2); }
+            get { return _header.GetUInt16PropertyWithOffset(2); }
             set
             {
                 _messageProperty = value;
-                SetHeaderValue(2, value);
+                _header.SetUInt16PropertyWithOffset(2, value);
             }
         }
 
@@ -69,21 +85,21 @@ namespace TestQP.Sockets
 
         public UInt32 StationId
         {
-            get { return GetProperty32WithOffset(6); }
+            get { return _header.GetUInt32PropertyWithOffset(6); }
             set
             {
                 _stationId = value;
-                SetHeaderValue(6, value);
+                _header.SetUInt32PropertyWithOffset(6, value);
             }
         }
 
         public UInt16 SequenceNO
         {
-            get { return GetPropertyWithOffset(10); }
+            get { return _header.GetUInt16PropertyWithOffset(10); }
             set
             {
                 _sequenceNO = value;
-                SetHeaderValue(10, value);
+                _header.SetUInt16PropertyWithOffset(10, value);
             }
         }
 
@@ -118,46 +134,6 @@ namespace TestQP.Sockets
         #endregion
 
         #region private methods
-
-        private void SetHeaderValue(int offset, UInt16 val)
-        {
-            byte[] tempBytes = ByteConverter.Uint16ToBytes(val);
-            for (int i = 0; i < 2; i++)
-            {
-                _header[i + offset] = tempBytes[i];
-            }
-        }
-
-        private void SetHeaderValue(int offset, UInt32 val)
-        {
-            byte[] tempBytes = ByteConverter.UInt32ToBytes(val);
-            for (int i = 0; i < 4; i++)
-            {
-                _header[i + offset] = tempBytes[i];
-            }
-        }
-
-        private UInt16 GetPropertyWithOffset(int offset)
-        {
-            byte[] tempBytes = new byte[2];
-            for (int i = 0; i < 2 && i < _header.Length - offset; i++)
-            {
-                tempBytes[i] = _header[offset + i];
-            }
-
-            return ByteConverter.BytesToUint16(tempBytes);
-        }
-
-        private UInt32 GetProperty32WithOffset(int offset)
-        {
-            byte[] tempBytes = new byte[4];
-            for (int i = 0; i < 4 && i < _header.Length - offset; i++)
-            {
-                tempBytes[i] = _header[offset + i];
-            }
-
-            return ByteConverter.BytesToUInt32(tempBytes);
-        }
 
         #endregion
     }

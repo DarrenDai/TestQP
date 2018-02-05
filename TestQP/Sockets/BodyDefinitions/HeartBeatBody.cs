@@ -8,7 +8,7 @@ namespace TestQP.Sockets.BodyDefinitions
 {
     public class HeartBeatBody : IMessageBody
     {
-        private byte[] _bodyBytes;
+        private byte[] _bodyBytes = new byte[0];
 
         public byte[] GetBodyBytes()
         {

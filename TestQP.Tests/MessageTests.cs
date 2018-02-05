@@ -14,7 +14,7 @@ namespace TestQP.Tests
     public class MessageTests
     {
         [TestMethod]
-        public void TestMessage()
+        public void TestGetMessageBytes()
         {
             var message = new Message();
             message.MessageBody = new ClientLogonBody()
@@ -42,9 +42,8 @@ namespace TestQP.Tests
                 data, true);
         }
 
-
         [TestMethod]
-        public void TestFromBytes_MsgId()
+        public void TestFromBytes_Header_MsgId()
         {
             var message = new Message();
             //8E 09 01 00 12 01 00 60 00 00 01 27 6F 00 04 06 02 00 32 8E
@@ -55,7 +54,7 @@ namespace TestQP.Tests
         }
 
         [TestMethod]
-        public void TestFromBytes_MsgLength()
+        public void TestFromBytes_Header_MsgLength()
         {
             var message = new Message();
             //8E 09 01 00 12 01 00 60 00 00 01 27 6F 00 04 06 02 00 32 8E
@@ -66,7 +65,7 @@ namespace TestQP.Tests
         }
 
         [TestMethod]
-        public void TestFromBytes_Version()
+        public void TestFromBytes_Header_Version()
         {
             var message = new Message();
             //8E 09 01 00 12 01 00 60 00 00 01 27 6F 00 04 06 02 00 32 8E
@@ -77,7 +76,7 @@ namespace TestQP.Tests
         }
 
         [TestMethod]
-        public void TestFromBytes_Token()
+        public void TestFromBytes_Header_Token()
         {
             var message = new Message();
             //8E 09 01 00 12 01 00 60 00 00 01 27 6F 00 04 06 02 00 32 8E

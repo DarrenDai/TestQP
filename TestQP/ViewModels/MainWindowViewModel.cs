@@ -275,7 +275,7 @@ namespace TestQP
 
             LogHelper.LogDebug(string.Format("获取到{0}条消息。分别是：\r\n{1}",
                 messageList.Count,
-                string.Join("\r\n", messageList.Select(x => BitConverter.ToString(x)).ToList())));
+                string.Join("\r\n", messageList.Select(x => string.Format("\t\t\t\t【{0}】", BitConverter.ToString(x))).ToList())));
 
             AnalysisMessage(messageList);
         }
@@ -287,7 +287,33 @@ namespace TestQP
                 return;
             }
 
-
+            foreach (var item in messageList)
+            {
+                Message msg = new Message();
+                msg.FromBytes(item);
+                switch (msg.Header.MessageId)
+                {
+                    //case (UInt16)FunctionEnum.CLIENT_ANS:
+                    //    LogHelper.LogDebug("");
+                    //    break;
+                    //case (UInt16)FunctionEnum.CLIENT_LOGON:
+                    //    break;
+                    //case (UInt16)FunctionEnum.CLIENT_HEART_BEAT:
+                    //    break;
+                    case (UInt16)FunctionEnum.SERVER_ANS:
+                        LogHelper.LogDebug("收到服务器通用应答！");
+                        break;
+                    case (UInt16)FunctionEnum.SERVER_LOGIN_ANS:
+                        LogHelper.LogDebug("登陆成功，系统时间为：" + (msg.MessageBody as ServerLogonAnsBody).Time.ToString("yyyy-MM-dd HH:mm:ss"));
+                        break;
+                    case (UInt16)FunctionEnum.SERVER_REALTIME_DATA:
+                        LogHelper.LogDebug("收到服务器实时信息！");
+                        break;
+                    default:
+                        LogHelper.LogDebug("收到服务器信息............");
+                        break;
+                }
+            }
         }
 
         #endregion

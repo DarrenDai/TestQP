@@ -80,6 +80,7 @@
     <Compile Include="Converters\BoolReverseConverter.cs" />
     <Compile Include="Converters\ByteConverter.cs" />
     <Compile Include="Events\Events.cs" />
+    <Compile Include="Extensions\ByteAarryExtensions.cs" />
     <Compile Include="Services\Class1.cs" />
     <Compile Include="Sockets\BodyDefinitions\ClientGeneralAnsBody.cs" />
     <Compile Include="Sockets\BodyDefinitions\ClientLogonBody.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="Sockets\MessageHeader.cs" />
     <Compile Include="TestQPModule.cs" />
     <Compile Include="Utils\BytesCoder.cs" />
+    <Compile Include="Utils\DataVerification.cs" />
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="Utils\Provider.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
