@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace TestQP.Utils
 {
-    public class Logger
+    public class LogHelper
     {
         #region Private fields
+
+        private static readonly ILog _logger = LogManager.GetLogger("SYSTEM");
 
         #endregion
 
@@ -33,6 +36,33 @@ namespace TestQP.Utils
         #endregion
 
         #region Public methods
+
+        public static void LogDebug(string message)
+        {
+            if (_logger.IsDebugEnabled)
+            {
+                _logger.Debug(message);
+                Provider.EventAggregator.GetEvent<TestQP.Events.Events.LogEvent>().Publish(message);
+            }
+        }
+
+        public static void LogInfo(string message)
+        {
+            if (_logger.IsInfoEnabled)
+            {
+                _logger.Info(message);
+                Provider.EventAggregator.GetEvent<TestQP.Events.Events.LogEvent>().Publish(message);
+            }
+        }
+
+        public static void LogError(string message, Exception ex)
+        {
+            if (_logger.IsErrorEnabled)
+            {
+                _logger.Error(message, ex);
+                Provider.EventAggregator.GetEvent<TestQP.Events.Events.LogEvent>().Publish(message);
+            }
+        }
 
         #endregion
 

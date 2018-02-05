@@ -83,7 +83,7 @@ namespace TestQP.Tests
         {
             var bytes = _header.GetHeader();
 
-            var data = BitConverter.ToString(bytes, 0, bytes.Length).Replace("-", " ");
+            var data = BitConverter.ToString(bytes).Replace("-", " ");
             Assert.AreEqual("06 02 00 25 01 00 60 00 00 01 00 04", data, true);
         }
 
@@ -95,7 +95,7 @@ namespace TestQP.Tests
             _header.FromBytes(bytesArr);
             var bytes = _header.GetHeader();
 
-            var data = BitConverter.ToString(bytes, 0, bytes.Length).Replace("-", " ");
+            var data = BitConverter.ToString(bytes).Replace("-", " ");
             Assert.AreEqual("06 02 00 25 01 00 60 00 00 01 00 04", data, true);
         }
     }

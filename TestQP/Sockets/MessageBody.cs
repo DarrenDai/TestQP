@@ -51,6 +51,11 @@ namespace TestQP.Sockets
 
         public void FromBytes(byte[] bytes)
         {
+            if (bytes == null)
+                throw new ApplicationException("参数不合法，提供的字节为空！");
+
+            BodyPart = new byte[bytes.Length];
+            Array.Copy(bytes, BodyPart, bytes.Length);
         }
 
         #endregion

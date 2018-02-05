@@ -2,35 +2,39 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="模拟站台显示屏" Height="650" Width="1024">
-  <Grid Margin="4">
-    <!--<GroupBox Margin="3" Padding="4" Header="x">-->
-    <Grid>
-      <Grid.RowDefinitions>
-        <RowDefinition Height="Auto"/>
-        <RowDefinition Height="*"/>
-      </Grid.RowDefinitions>
-      <GroupBox Header="Information" Padding="4">
+    <Grid Margin="4">
+        <!--<GroupBox Margin="3" Padding="4" Header="x">-->
         <Grid>
-          <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-          </Grid.RowDefinitions>
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-          </Grid.ColumnDefinitions>
-          <TextBlock Grid.Row="0" Text="本站ID：" />
-          <TextBlock Grid.Row="1" Text="线路车辆：" />
-          <TextBlock Grid.Row="2" Text="上行车辆：" />
-        </Grid>
-      </GroupBox>
-      <GroupBox Grid.Row="1" Header="Debug Info" Margin="0 7 0 0" Padding="4">
-        <TextBox  Text="{Binding Output}" IsReadOnly="True" TextWrapping="Wrap" Foreground="Blue"
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <GroupBox Header="Information" Padding="4">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Text="本站ID：" />
+                    <TextBlock Grid.Row="1" Text="线路车辆：" />
+                    <TextBlock Grid.Row="2" Text="上行车辆：" />
+
+                    <Button Grid.Row="0" Grid.Column="1" Command="{Binding ConnectCommand}" Content="Connect"/>
+                    <Button Grid.Row="1" Grid.Column="1" Command="{Binding DisConnectCommand}" Content="Disconnect" Margin="0 5"/>
+                    <Button Grid.Row="2" Grid.Column="1" Command="{Binding HeartBeatCommand}" Content="HeartBeat"/>
+                </Grid>
+            </GroupBox>
+            <GroupBox Grid.Row="1" Header="Debug Info" Margin="0 7 0 0" Padding="4">
+                <TextBox  Text="{Binding Output}" IsReadOnly="True" TextWrapping="Wrap" Foreground="Blue"
              AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
-      </GroupBox>
+            </GroupBox>
+        </Grid>
+        <!--</GroupBox>-->
     </Grid>
-    <!--</GroupBox>-->
-  </Grid>
 </Window>

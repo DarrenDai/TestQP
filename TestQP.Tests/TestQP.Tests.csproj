@@ -50,6 +50,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="BodyDefinitions\TestClientLogonBody.cs" />
+    <Compile Include="Utils\BytesCoderTests.cs" />
     <Compile Include="MessageBodyTests.cs" />
     <Compile Include="MessageTests.cs" />
     <Compile Include="MesssageHeaderTests.cs" />
@@ -62,6 +64,7 @@
       <Name>TestQP</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

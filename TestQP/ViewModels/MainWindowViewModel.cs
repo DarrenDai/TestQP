@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Prism.Commands;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
@@ -10,8 +11,11 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using TestQP.Constants;
 using TestQP.Sockets;
+using TestQP.Sockets.BodyDefinitions;
+using TestQP.Utils;
 
 namespace TestQP
 {
@@ -30,7 +34,7 @@ namespace TestQP
 
         public MainWindowViewModel()
         {
-            Dowork();
+            Initialize();
         }
 
         #endregion
@@ -52,11 +56,64 @@ namespace TestQP
 
         #endregion
 
+        #region Commands
+
+        public ICommand ConnectCommand { get; private set; }
+
+        public ICommand DisConnectCommand { get; private set; }
+
+        public ICommand HeartBeatCommand { get; private set; }
+
+
+        #endregion
+
+        #region Initialize methods
+
+        private void Initialize()
+        {
+            InitializeCommands();
+
+            InitializeEvents();
+        }
+
+        private void InitializeEvents()
+        {
+            Provider.EventAggregator.GetEvent<TestQP.Events.Events.LogEvent>().Subscribe(DisplayLogs);
+        }
+
+        private void InitializeCommands()
+        {
+            ConnectCommand = new DelegateCommand<object>(OnConnect);
+            DisConnectCommand = new DelegateCommand<object>(OnDisConnect);
+            HeartBeatCommand = new DelegateCommand<object>(OnHeartBeat);
+        }
+
+        #endregion
+
+        #region Command implements
+
+        public void OnConnect(object payload)
+        {
+            Dowork();
+        }
+
+        public void OnDisConnect(object payload)
+        {
+
+        }
+
+        public void OnHeartBeat(object payload)
+        {
+
+        }
+
+        #endregion
+
         #region Private methods
 
         private void Dowork()
         {
-            LogInfo("Begin to work...");
+            LogHelper.LogInfo("Begin to work...");
             Task.Factory.StartNew(() =>
             {
                 try
@@ -64,9 +121,9 @@ namespace TestQP
                     while (true)
                     {
                         _client = new TcpClient(_serverAddress, _serverPort);
-                        LogInfo("Connected!");
+                        LogHelper.LogInfo("Connected!");
 
-                        SentMessage(_client, GetLoginMessage());
+                        SendMessage(_client, GetLoginMessage());
 
                         NetworkStream stream = _client.GetStream();
                         Byte[] buffer = new Byte[1024];
@@ -76,23 +133,20 @@ namespace TestQP
                         //// Loop to receive all the data sent by the server.
                         while ((count = stream.Read(buffer, 0, buffer.Length)) != 0)
                         {
-
-                            // Translate data bytes to a ASCII string.
-                            data = BitConverter.ToString(buffer, 0, count).Replace("-", " ");
-                            //data = System.Text.Encoding.ASCII.GetString(byteBuffer, 0, i);
-                            LogInfo(string.Format("Received: {0}", data));
-                            // byte[] msg = System.Text.Encoding.ASCII.GetBytes(data);
+                            byte[] msg = new byte[count];
+                            Array.Copy(buffer, msg, count);
+                            Task.Factory.StartNew(ConsumeMessage, msg);
                         }
 
                         stream.Close();
                         _client.Close();
 
-                        LogInfo("Client closed!");
+                        LogHelper.LogInfo("Client closed!");
                     }
                 }
                 catch (Exception ex)
                 {
-                    LogInfo(ex.ToString());
+                    LogHelper.LogError(ex.Message, ex);
                 }
                 finally
                 {
@@ -103,7 +157,14 @@ namespace TestQP
         private byte[] GetLoginMessage()
         {
             var message = new Message();
-            message.MessageBody = new MessageBody();
+            message.MessageBody = new ClientLogonBody()
+            {
+                Password = "123456",
+                RuntimeVersion = "Android 5.1.1",
+                FrontEndVersion = "1.0.0"
+            };
+            //var loginBytes = new byte[] { 0x46, 0x72, 0x65, 0x65, 0x52, 0x54, 0x4F, 0x53, 0x20, 0x56, 0x38, 0x2E, 0x32, 0x2E, 0x33, 0x00, 0x00, 0x00, 0x32, 0x2E, 0x30, 0x2E, 0x30, 0x37 };
+            //message.MessageBody.FromBytes(loginBytes);
             message.Header = new MessageHeader()
             {
                 MessageId = (UInt16)FunctionEnum.CLIENT_LOGON,
@@ -119,12 +180,13 @@ namespace TestQP
             //return new byte[] { 0x8E, 0x06, 0x02, 0x00, 0x25, 0x01, 0x00, 0x60, 0x00, 0x00, 0x01, 0x00, 0x04, 0x46, 0x72, 0x65, 0x65, 0x52, 0x54, 0x4F, 0x53, 0x20, 0x56, 0x38, 0x2E, 0x32, 0x2E, 0x33, 0x00, 0x00, 0x00, 0x32, 0x2E, 0x30, 0x2E, 0x30, 0x37, 0x78, 0x8E };
         }
 
-        private void SentMessage(TcpClient client, byte[] msg)
+        private void SendMessage(TcpClient client, byte[] msg)
         {
+            var encodedMsg = BytesCoder.Encode(msg);
             var stream = client.GetStream();
-            stream.Write(msg, 0, msg.Length);
-            string data = BitConverter.ToString(msg, 0).Replace("-", " ");
-            LogInfo(string.Format("Sent: {0}", data));
+            stream.Write(encodedMsg, 0, encodedMsg.Length);
+            string data = BitConverter.ToString(encodedMsg).Replace("-", " ");
+            LogHelper.LogInfo(string.Format("Sent: {0}", data));
         }
 
         private void Connect(String server, int port, String message)
@@ -180,9 +242,52 @@ namespace TestQP
             Console.Read();
         }
 
-        private void LogInfo(string text)
+        private void DisplayLogs(string text)
         {
             Output += string.Format("{0} {1} \r\n", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"), text);
+        }
+
+        private void ConsumeMessage(object obj)
+        {
+            if (!(obj is byte[])) return;
+            var msg = obj as byte[];
+            // Translate data bytes to a ASCII string.
+            var data = BitConverter.ToString(msg).Replace("-", " ");
+            //data = System.Text.Encoding.ASCII.GetString(byteBuffer, 0, i);
+            LogHelper.LogInfo(string.Format("Received: {0}", data));
+            // byte[] msg = System.Text.Encoding.ASCII.GetBytes(data);
+
+            List<byte[]> messageList = new List<byte[]>();
+            int lastStartIndex = 0;
+            for (int i = 0; i < msg.Length; i++)
+            {
+                if (i == 0 || msg[i] != Constant.FLAG_BYTE) continue;
+
+                if (msg[i] == Constant.FLAG_BYTE)
+                {
+                    var tempBuff = new byte[i + 1 - lastStartIndex];
+                    Array.Copy(msg, lastStartIndex, tempBuff, 0, i + 1 - lastStartIndex);
+                    messageList.Add(BytesCoder.Decode(tempBuff));
+
+                    lastStartIndex = ++i;
+                }
+            }
+
+            LogHelper.LogDebug(string.Format("获取到{0}条消息。分别是：\r\n{1}",
+                messageList.Count,
+                string.Join("\r\n", messageList.Select(x => BitConverter.ToString(x)).ToList())));
+
+            AnalysisMessage(messageList);
+        }
+
+        private void AnalysisMessage(List<Byte[]> messageList)
+        {
+            if (messageList == null || messageList.Count == 0)
+            {
+                return;
+            }
+
+
         }
 
         #endregion

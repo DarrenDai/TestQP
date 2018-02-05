@@ -34,6 +34,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>lib\log4net\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Prism">
+      <HintPath>lib\Prism\Prism.dll</HintPath>
+    </Reference>
+    <Reference Include="Prism.Unity.Wpf">
+      <HintPath>lib\Prism\Prism.Unity.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Prism.Wpf">
+      <HintPath>lib\Prism\Prism.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
@@ -62,14 +74,28 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Constants\Constants.cs" />
     <Compile Include="Constants\EncrptMethodEnum.cs" />
     <Compile Include="Constants\FunctionEnum.cs" />
+    <Compile Include="Converters\BoolReverseConverter.cs" />
     <Compile Include="Converters\ByteConverter.cs" />
+    <Compile Include="Events\Events.cs" />
     <Compile Include="Services\Class1.cs" />
+    <Compile Include="Sockets\BodyDefinitions\ClientGeneralAnsBody.cs" />
+    <Compile Include="Sockets\BodyDefinitions\ClientLogonBody.cs" />
+    <Compile Include="Sockets\BodyDefinitions\HeartBeatBody.cs" />
+    <Compile Include="Sockets\BodyDefinitions\Base\IMessageBody.cs" />
+    <Compile Include="Sockets\BodyDefinitions\Base\MessageBodyBase.cs" />
+    <Compile Include="Sockets\BodyDefinitions\RealTimeDataBody.cs" />
+    <Compile Include="Sockets\BodyDefinitions\ServerGeneralAnsBody.cs" />
+    <Compile Include="Sockets\BodyDefinitions\ServerLogonAnsBody.cs" />
     <Compile Include="Sockets\Message.cs" />
     <Compile Include="Sockets\MessageBody.cs" />
     <Compile Include="Sockets\MessageHeader.cs" />
+    <Compile Include="TestQPModule.cs" />
+    <Compile Include="Utils\BytesCoder.cs" />
     <Compile Include="Utils\Logger.cs" />
+    <Compile Include="Utils\Provider.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
