@@ -116,6 +116,25 @@
                                                     </DataTemplate>
                                                 </ListBox.ItemTemplate>
                                             </ListBox>
+                                            <Grid Opacity="0.5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel  Grid.Row="1" Grid.ColumnSpan="3" Orientation="Horizontal"
+                                                             VerticalAlignment="Bottom" HorizontalAlignment="Center"  Margin="0 0 0 20">
+                                                    <TextBlock Text="开往 "/>
+                                                    <TextBlock Text="{Binding EndStation}" Opacity="0.9"/>
+                                                </StackPanel>
+
+                                                <Border Grid.Row="2" Height="7" Background="#FFFFFFFF" VerticalAlignment="Bottom"  Margin="30 0 0 10"/>
+                                                <Path Grid.Row="2" Grid.Column="1" Data="M298.8,214.6 L418.29999,214.6 297.49999,160.50001 z"
+                                                      Margin="-3 0 30 10" Height="14" Width="80"
+                                                      Fill="#FFFFFFFF" HorizontalAlignment="Left"  VerticalAlignment="Bottom"
+                                                     
+                                                      Stretch="Fill" />
+                                            </Grid>
                                         </Grid>
                                         <Grid Grid.Column="2" Margin="10 0">
                                             <Grid.RowDefinitions>
