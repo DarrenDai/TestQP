@@ -1,4 +1,4 @@
-﻿using Prism.Events;
+﻿using Microsoft.Practices.Prism.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace TestQP.Events
 {
     public class Events
     {
-        public class LogEvent : PubSubEvent<string>
+        public class LogEvent : CompositePresentationEvent<string>
         {
         }
     }

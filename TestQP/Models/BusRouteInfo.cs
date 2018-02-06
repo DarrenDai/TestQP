@@ -19,37 +19,37 @@ namespace TestQP.Models
         public int RouteId
         {
             get { return _routeId; }
-            set { _routeId = value; OnPropertyChanged(); }
+            set { _routeId = value; OnPropertyChanged(() => RouteId); }
         }
 
         public string RouteNo
         {
             get { return _routeNo; }
-            set { _routeNo = value; OnPropertyChanged(); }
+            set { _routeNo = value; OnPropertyChanged(() => RouteNo); }
         }
 
         public string StartStation
         {
             get { return _startStation; }
-            set { _startStation = value; OnPropertyChanged(); }
+            set { _startStation = value; OnPropertyChanged(() => StartStation); }
         }
 
         public string EndStation
         {
             get { return _endStation; }
-            set { _endStation = value; OnPropertyChanged(); }
+            set { _endStation = value; OnPropertyChanged(() => EndStation); }
         }
 
         public string StartStationTimeRange
         {
             get { return _startStationTimeRange; }
-            set { _startStationTimeRange = value; OnPropertyChanged(); }
+            set { _startStationTimeRange = value; OnPropertyChanged(() => StartStationTimeRange); }
         }
 
         public string EndStationTimeRange
         {
             get { return _endStationTimeRange; }
-            set { _endStationTimeRange = value; OnPropertyChanged(); }
+            set { _endStationTimeRange = value; OnPropertyChanged(() => EndStationTimeRange); }
         }
 
         public List<StationPoint> Stations

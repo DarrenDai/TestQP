@@ -13,7 +13,7 @@ namespace TestQP.Models
         public string Name
         {
             get { return _name; }
-            set { _name = value; OnPropertyChanged(); }
+            set { _name = value; OnPropertyChanged(() => Name); }
         }
 
 
@@ -22,7 +22,7 @@ namespace TestQP.Models
         public bool IsBling
         {
             get { return _isBling; }
-            set { _isBling = value; OnPropertyChanged(); }
+            set { _isBling = value; OnPropertyChanged(() => IsBling); }
         }
 
         private int _order;
@@ -30,7 +30,7 @@ namespace TestQP.Models
         public int Order
         {
             get { return _order; }
-            set { _order = value; OnPropertyChanged(); }
+            set { _order = value; OnPropertyChanged(() => Order); }
         }
 
 

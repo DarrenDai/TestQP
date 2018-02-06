@@ -1,4 +1,4 @@
-﻿using Prism.Commands;
+﻿using Microsoft.Practices.Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -60,7 +60,7 @@ namespace TestQP
             set
             {
                 _output = value;
-                OnPropertyChanged();
+                OnPropertyChanged(() => Output);
             }
         }
 
@@ -128,10 +128,10 @@ namespace TestQP
                         tempList.Add(new StationPoint() { Name = stopItem.name, Order = stopItem.order });
                     }
 
-                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
                         BusRoutes.Add(routeInfo);
-                    });
+                    }));
                 }
             });
         }
@@ -391,38 +391,38 @@ namespace TestQP
         private void UpdateViewData(RealTimeDataBody body)
         {
             var locations = body.BusLocations;
-            if (!BusRoutes.Any(x => x.RouteId == body.RouteId))
-            {
-                var routeInfo = new BusRouteInfo()
-                {
-                    RouteId = body.RouteId,
-                    RouteNo = body.RouteId.ToString(),
-                    StartStation = "浦东",
-                    EndStation = "浦西",
-                    StartStationTimeRange = "6:00-9:00",
-                    EndStationTimeRange = "06:00-09:00"
-                };
+            //if (!BusRoutes.Any(x => x.RouteId == body.RouteId))
+            //{
+            //    var routeInfo = new BusRouteInfo()
+            //    {
+            //        RouteId = body.RouteId,
+            //        RouteNo = body.RouteId.ToString(),
+            //        StartStation = "浦东",
+            //        EndStation = "浦西",
+            //        StartStationTimeRange = "6:00-9:00",
+            //        EndStationTimeRange = "06:00-09:00"
+            //    };
 
-                for (int i = 0; i < 20; i++)
-                {
-                    routeInfo.Stations.Add(new StationPoint() { Name = i.ToString() + "这里是哪哪哪！！" });
-                }
+            //    for (int i = 0; i < 20; i++)
+            //    {
+            //        routeInfo.Stations.Add(new StationPoint() { Name = i.ToString() + "这里是哪哪哪！！" });
+            //    }
 
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                {
-                    BusRoutes.Add(routeInfo);
-                });
+            //    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+            //    {
+            //        BusRoutes.Add(routeInfo);
+            //    }));
 
-            }
-            else
-            {
+            //}
+            //else
+            //{
 
-            }
+            //}
 
-            foreach (var item in locations)
-            {
+            //foreach (var item in locations)
+            //{
 
-            }
+            //}
         }
 
         #endregion

@@ -14,7 +14,6 @@ namespace TestQP.Utils
         {
             var temp = DoHttpGet("");
             var t = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseObject>(temp);
-
             return t;
         }
 

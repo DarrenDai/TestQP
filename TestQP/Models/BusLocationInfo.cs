@@ -13,7 +13,7 @@ namespace TestQP.Models
         public int StationNo
         {
             get { return _stationNo; }
-            set { _stationNo = value; OnPropertyChanged(); }
+            set { _stationNo = value; OnPropertyChanged(() => StationNo); }
         }
 
         private bool _isInstation;
@@ -21,7 +21,7 @@ namespace TestQP.Models
         public bool IsInstation
         {
             get { return _isInstation; }
-            set { _isInstation = value; OnPropertyChanged(); }
+            set { _isInstation = value; OnPropertyChanged(() => IsInstation); }
         }
 
         private int _stationBusCount;
@@ -29,7 +29,7 @@ namespace TestQP.Models
         public int StationBusCount
         {
             get { return _stationBusCount; }
-            set { _stationBusCount = value; OnPropertyChanged(); }
+            set { _stationBusCount = value; OnPropertyChanged(() => StationBusCount); }
         }
 
         private bool _isPassed;
@@ -37,7 +37,7 @@ namespace TestQP.Models
         public bool IsPassed
         {
             get { return _isPassed; }
-            set { _isPassed = value; OnPropertyChanged(); }
+            set { _isPassed = value; OnPropertyChanged(() => IsPassed); }
         }
 
         private bool _isBling;
@@ -45,7 +45,7 @@ namespace TestQP.Models
         public bool IsBling
         {
             get { return _isBling; }
-            set { _isBling = value; OnPropertyChanged(); }
+            set { _isBling = value; OnPropertyChanged(() => IsBling); }
         }
 
         private string _customedString;
@@ -53,7 +53,7 @@ namespace TestQP.Models
         public string CustomedString
         {
             get { return _customedString; }
-            set { _customedString = value; OnPropertyChanged(); }
+            set { _customedString = value; OnPropertyChanged(() => CustomedString); }
         }
 
     }
