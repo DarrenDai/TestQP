@@ -1,6 +1,7 @@
 ﻿using Prism.Commands;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
 using System.IO;
@@ -13,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TestQP.Constants;
+using TestQP.Models;
 using TestQP.Sockets;
 using TestQP.Sockets.BodyDefinitions;
 using TestQP.Utils;
@@ -27,6 +29,15 @@ namespace TestQP
         private int _serverPort = int.Parse(ConfigurationManager.AppSettings["ServerPort"]);
 
         private TcpClient _client = null;
+
+        private ObservableCollection<BusRouteInfo> _busRoutes = new ObservableCollection<BusRouteInfo>();
+
+        public ObservableCollection<BusRouteInfo> BusRoutes
+        {
+            get { return _busRoutes; }
+        }
+
+        private ResponseObject _data = null;
 
         #endregion
 
@@ -74,6 +85,8 @@ namespace TestQP
             InitializeCommands();
 
             InitializeEvents();
+
+            InitializeData();
         }
 
         private void InitializeEvents()
@@ -86,6 +99,41 @@ namespace TestQP
             ConnectCommand = new DelegateCommand<object>(OnConnect);
             DisConnectCommand = new DelegateCommand<object>(OnDisConnect);
             HeartBeatCommand = new DelegateCommand<object>(OnHeartBeat);
+        }
+
+        private void InitializeData()
+        {
+            Task.Factory.StartNew(() =>
+            {
+                _data = new RestfulHelper().GetStationInfo();
+                foreach (var item in _data.lines)
+                {
+                    var routeInfo = new BusRouteInfo()
+                    {
+                        RouteId = item.buslineId,
+                        RouteNo = item.name,
+                        StartStation = item.from,
+                        EndStation = item.to,
+                        StartStationTimeRange = string.Format("{0}- {1}", item.first, item.last),
+                        EndStationTimeRange = string.Format("{0}- {1}", item.first, item.last),
+                    };
+
+                    // routeInfo.Stations = item.stops.Select(x => new StationPoint() { Name = x.name, Order = x.order }).ToList();
+
+                    var tempList = new List<StationPoint>();
+                    routeInfo.Stations = tempList;
+                    foreach (var stopItem in item.stops)
+                    {
+                        if (tempList.Any(x => x.Order == stopItem.order)) continue;
+                        tempList.Add(new StationPoint() { Name = stopItem.name, Order = stopItem.order });
+                    }
+
+                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        BusRoutes.Add(routeInfo);
+                    });
+                }
+            });
         }
 
         #endregion
@@ -328,6 +376,8 @@ namespace TestQP
                             LogHelper.LogInfo(string.Format("收到服务器实时信息！路线ID：{0}，路线方向{1}，班车数量：{2},定制信息：【{3}】,详情：\r\n{4}"
                                 , body.RouteId, body.RouteDirection, body.BusCount, body.CustomedInfo, str));
 
+
+                            UpdateViewData(body);
                         }
 
                         break;
@@ -335,6 +385,43 @@ namespace TestQP
                         LogHelper.LogDebug("收到服务器信息...........XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.");
                         break;
                 }
+            }
+        }
+
+        private void UpdateViewData(RealTimeDataBody body)
+        {
+            var locations = body.BusLocations;
+            if (!BusRoutes.Any(x => x.RouteId == body.RouteId))
+            {
+                var routeInfo = new BusRouteInfo()
+                {
+                    RouteId = body.RouteId,
+                    RouteNo = body.RouteId.ToString(),
+                    StartStation = "浦东",
+                    EndStation = "浦西",
+                    StartStationTimeRange = "6:00-9:00",
+                    EndStationTimeRange = "06:00-09:00"
+                };
+
+                for (int i = 0; i < 20; i++)
+                {
+                    routeInfo.Stations.Add(new StationPoint() { Name = i.ToString() + "这里是哪哪哪！！" });
+                }
+
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    BusRoutes.Add(routeInfo);
+                });
+
+            }
+            else
+            {
+
+            }
+
+            foreach (var item in locations)
+            {
+
             }
         }
 

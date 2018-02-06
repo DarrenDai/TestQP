@@ -13,6 +13,8 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -23,6 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,10 +35,15 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
       <HintPath>lib\log4net\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\Newton\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Prism">
       <HintPath>lib\Prism\Prism.dll</HintPath>
@@ -85,6 +93,8 @@
     <Compile Include="Events\Events.cs" />
     <Compile Include="Extensions\ByteAarryExtensions.cs" />
     <Compile Include="Models\BusLocationInfo.cs" />
+    <Compile Include="Models\BusRouteInfo.cs" />
+    <Compile Include="Models\StationPoint.cs" />
     <Compile Include="Services\Class1.cs" />
     <Compile Include="Sockets\BodyDefinitions\ClientGeneralAnsBody.cs" />
     <Compile Include="Sockets\BodyDefinitions\ClientLogonBody.cs" />
@@ -101,6 +111,7 @@
     <Compile Include="Utils\DataVerification.cs" />
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="Utils\Provider.cs" />
+    <Compile Include="Utils\RestfulHelper.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -133,9 +144,13 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="UserControls\" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="TempNotes.txt" />
   </ItemGroup>
