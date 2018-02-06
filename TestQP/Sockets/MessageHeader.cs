@@ -14,22 +14,23 @@ namespace TestQP.Sockets
         #region Private fields
 
         // Messageid should be function id
-        private UInt16 _messageId = 0x0602; //WORD
-        private UInt16 _messageProperty = 0x0025;//WORD
-        private byte _protocolVersion = 0x01;
-        private byte _token = 0x00;
-        private UInt32 _stationId = 0x60000001;//BCD 4
-        private UInt16 _sequenceNO = 0x0004;//WORD
+        //private UInt16 _messageId = 0x0602; //WORD
+        //private UInt16 _messageProperty = 0x0025;//WORD
+        //private byte _protocolVersion = 0x01;
+        //private byte _token = 0x00;
+        //private UInt32 _stationId = 0x60000001;//BCD 4
+        //private UInt16 _sequenceNO = 0x0004;//WORD
 
         public const uint HeaderLength = (2 + 2 + 1 + 1 + 4 + 2); //12 bytes
         private byte[] _header = new byte[HeaderLength];
+
         #endregion
 
         #region Constructor
 
         public MessageHeader()
         {
-            MessageId = (UInt16)FunctionEnum.CLIENT_LOGON;
+            MessageId = FunctionEnum.CLIENT_LOGON;
             MessageProperty = 0x0025;
             ProtocolVersion = 0x01;
             Token = 0x00;
@@ -41,65 +42,82 @@ namespace TestQP.Sockets
 
         #region Public properties
 
-        public UInt16 MessageId
+        /// <summary>
+        /// 消息 ID WORD
+        /// </summary>
+        public FunctionEnum MessageId
         {
-            get { return _header.GetUInt16PropertyWithOffset(0); }
+            get { return (FunctionEnum)_header.GetUInt16PropertyWithOffset(0); }
             set
             {
-                _messageId = value;
-
-                _header.SetUInt16PropertyWithOffset(0, value);
+                //_messageId = (UInt16)value;
+                _header.SetUInt16PropertyWithOffset(0, (UInt16)value);
             }
         }
 
-        public UInt16 MessageProperty
+        /// <summary>
+        /// 消息体属性 WORD 
+        /// 不包括协议包头和协议包尾的数据总长度(字节数)，高字节在前，低字节在后；
+        /// </summary>
+        public int MessageProperty
         {
             get { return _header.GetUInt16PropertyWithOffset(2); }
             set
             {
-                _messageProperty = value;
-                _header.SetUInt16PropertyWithOffset(2, value);
+                //_messageProperty = (UInt16)value;
+                _header.SetUInt16PropertyWithOffset(2, (UInt16)value);
             }
         }
 
-        public byte ProtocolVersion
+        /// <summary>
+        /// 版本 Byte
+        /// </summary>
+        public int ProtocolVersion
         {
             get { return _header[4]; }
             set
             {
-                _protocolVersion = value;
-
-                _header[4] = value;
+                // _protocolVersion = (byte)value;
+                _header[4] = (byte)value;
             }
         }
 
-        public byte Token
+        /// <summary>
+        /// Token Byte
+        /// </summary>
+        public int Token
         {
             get { return _header[5]; }
             set
             {
-                _token = value;
-                _header[5] = value;
+                //_token = (byte)value;
+                _header[5] = (byte)value;
             }
         }
 
-        public UInt32 StationId
+        /// <summary>
+        /// 电子站牌标识	 BCD[4]
+        /// </summary>
+        public int StationId
         {
-            get { return _header.GetUInt32PropertyWithOffset(6); }
+            get { return (int)_header.GetUInt32PropertyWithOffset(6); }
             set
             {
-                _stationId = value;
-                _header.SetUInt32PropertyWithOffset(6, value);
+                // _stationId = (UInt32)value;
+                _header.SetUInt32PropertyWithOffset(6, (UInt32)value);
             }
         }
 
-        public UInt16 SequenceNO
+        /// <summary>
+        /// 流水号 WORD
+        /// </summary>
+        public int SequenceNO
         {
             get { return _header.GetUInt16PropertyWithOffset(10); }
             set
             {
-                _sequenceNO = value;
-                _header.SetUInt16PropertyWithOffset(10, value);
+                //_sequenceNO = (UInt16)value;
+                _header.SetUInt16PropertyWithOffset(10, (UInt16)value);
             }
         }
 

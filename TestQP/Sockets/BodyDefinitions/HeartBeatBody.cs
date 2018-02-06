@@ -8,7 +8,14 @@ namespace TestQP.Sockets.BodyDefinitions
 {
     public class HeartBeatBody : IMessageBody
     {
+        #region Private fields
+
         private byte[] _bodyBytes = new byte[0];
+
+        #endregion
+
+        #region  Interface implements
+
 
         public byte[] GetBodyBytes()
         {
@@ -28,5 +35,8 @@ namespace TestQP.Sockets.BodyDefinitions
         {
             return _bodyBytes != null ? _bodyBytes.Length : 0;
         }
+
+        #endregion
+
     }
 }

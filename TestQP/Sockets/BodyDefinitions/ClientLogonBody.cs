@@ -8,16 +8,30 @@ namespace TestQP.Sockets.BodyDefinitions
 {
     public class ClientLogonBody : IMessageBody
     {
+        #region Private fields
+
+        #endregion
 
         #region Public Properties
 
+        /// <summary>
+        /// 登录密码
+        /// </summary>
         public string Password { get; set; }
 
+        /// <summary>
+        /// 运行环境版本
+        /// </summary>
         public string RuntimeVersion { get; set; }
 
+        /// <summary>
+        /// 前端程序版本
+        /// </summary>
         public string FrontEndVersion { get; set; }
 
         #endregion
+
+        #region  Interface implements
 
         public byte[] GetBodyBytes()
         {
@@ -42,5 +56,7 @@ namespace TestQP.Sockets.BodyDefinitions
         {
             return Encoding.GetEncoding("gbk").GetBytes(string.Format("{0}\0{1}\0{2}\0", Password, RuntimeVersion, FrontEndVersion));
         }
+
+        #endregion
     }
 }

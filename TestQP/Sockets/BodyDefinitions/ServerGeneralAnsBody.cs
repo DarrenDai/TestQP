@@ -9,12 +9,17 @@ namespace TestQP.Sockets.BodyDefinitions
 {
     public class ServerGeneralAnsBody : IMessageBody
     {
+        #region Private fields
+
         private byte[] _bodyBytes = new byte[2 + 2 + 1];
+
+        #endregion
 
         #region Public properties
 
         /// <summary>
         /// 对应的电子站牌消息的流水号
+        /// WORD
         /// </summary>
         public int SequenceNO
         {
@@ -27,6 +32,7 @@ namespace TestQP.Sockets.BodyDefinitions
 
         /// <summary>
         /// 对应的电子站牌消息的 ID
+        /// WORD
         /// </summary>
         public int AnsMessageId
         {
@@ -39,6 +45,7 @@ namespace TestQP.Sockets.BodyDefinitions
 
         /// <summary>
         /// 0：成功/确认；1：失败；2：消息有误；
+        /// Byte
         /// </summary>
         public int Result
         {
@@ -50,6 +57,8 @@ namespace TestQP.Sockets.BodyDefinitions
         }
 
         #endregion
+
+        #region  Interface implements
 
         public byte[] GetBodyBytes()
         {
@@ -72,5 +81,8 @@ namespace TestQP.Sockets.BodyDefinitions
         {
             return _bodyBytes != null ? _bodyBytes.Length : 0;
         }
+
+        #endregion
+
     }
 }

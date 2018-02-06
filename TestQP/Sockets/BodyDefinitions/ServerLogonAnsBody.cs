@@ -3,17 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestQP.Converters;
 
 namespace TestQP.Sockets.BodyDefinitions
 {
     public class ServerLogonAnsBody : IMessageBody
     {
+        #region Private fields
+
         private byte[] _bodyBytes = new byte[1 + 1 + 7];
+
+        #endregion
 
         #region Public properties
 
         /// <summary>
         /// 登录状态：0 – 成功，> 0 失败。
+        /// BYTE
         /// </summary>
         public int Status
         {
@@ -29,6 +35,7 @@ namespace TestQP.Sockets.BodyDefinitions
 
         /// <summary>
         /// TOKEN=0为无效，登录失败时此值为0。
+        /// BYTE
         /// </summary>
         public int Token
         {
@@ -43,31 +50,27 @@ namespace TestQP.Sockets.BodyDefinitions
         }
 
         /// <summary>
-        /// 当前系统时间日期，年月日周时分秒。 BCD[7]
+        /// 当前系统时间日期，年月日周时分秒。 
+        /// BCD[7]
         /// </summary>
         public DateTime Time
         {
             get
             {
-                return new DateTime(2000 + ConvertBCDToInt(_bodyBytes[2]),
-                          ConvertBCDToInt(_bodyBytes[3]),
-                          ConvertBCDToInt(_bodyBytes[4]),
-                          ConvertBCDToInt(_bodyBytes[6]),
-                          ConvertBCDToInt(_bodyBytes[7]),
-                          ConvertBCDToInt(_bodyBytes[8]));
+                var tempBytes = new byte[7];
+                Array.Copy(_bodyBytes, 2, tempBytes, 0, tempBytes.Length);
+                return ByteConverter.BCDToDatetime(tempBytes);
             }
             set
             {
-                _bodyBytes[2] = ConvertBCD((byte)(value.Year - 2000));
-                _bodyBytes[3] = ConvertBCD((byte)value.Month);
-                _bodyBytes[4] = ConvertBCD((byte)value.Day);
-                _bodyBytes[6] = ConvertBCD((byte)value.Hour);
-                _bodyBytes[7] = ConvertBCD((byte)value.Minute);
-                _bodyBytes[8] = ConvertBCD((byte)value.Second);
+                var tempBytes = ByteConverter.DatetimeToBCD(value);
+                Array.Copy(tempBytes, 0, _bodyBytes, 2, tempBytes.Length);
             }
         }
 
         #endregion
+
+        #region Interface implements
 
         public byte[] GetBodyBytes()
         {
@@ -90,19 +93,6 @@ namespace TestQP.Sockets.BodyDefinitions
             return _bodyBytes != null ? _bodyBytes.Length : 0;
         }
 
-        private byte ConvertBCD(byte b)
-        {
-            byte b1 = (byte)(b / 10);
-            byte b2 = (byte)(b % 10);
-            return (byte)((b1 << 4) | b2);
-        }
-
-        public byte ConvertBCDToInt(byte b)
-        {
-            byte b1 = (byte)((b >> 4) & 0xF);
-            byte b2 = (byte)(b & 0xF);
-
-            return (byte)(b1 * 10 + b2);
-        }
+        #endregion
     }
 }

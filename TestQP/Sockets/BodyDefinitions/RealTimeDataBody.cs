@@ -95,7 +95,7 @@ namespace TestQP.Sockets.BodyDefinitions
         }
         #endregion
 
-        #region Interface methods
+        #region Interface implements
 
         public byte[] GetBodyBytes()
         {

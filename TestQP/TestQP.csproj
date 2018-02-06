@@ -76,7 +76,7 @@
     </Compile>
     <Compile Include="Constants\Constants.cs" />
     <Compile Include="Constants\EncrptMethodEnum.cs" />
-    <Compile Include="Constants\FunctionEnum.cs" />
+    <Compile Include="Constants\Enums\FunctionEnum.cs" />
     <Compile Include="Converters\BoolReverseConverter.cs" />
     <Compile Include="Converters\ByteConverter.cs" />
     <Compile Include="Events\Events.cs" />
@@ -91,7 +91,6 @@
     <Compile Include="Sockets\BodyDefinitions\ServerGeneralAnsBody.cs" />
     <Compile Include="Sockets\BodyDefinitions\ServerLogonAnsBody.cs" />
     <Compile Include="Sockets\Message.cs" />
-    <Compile Include="Sockets\MessageBody.cs" />
     <Compile Include="Sockets\MessageHeader.cs" />
     <Compile Include="TestQPModule.cs" />
     <Compile Include="Utils\BytesCoder.cs" />

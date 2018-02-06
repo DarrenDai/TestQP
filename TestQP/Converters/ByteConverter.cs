@@ -114,5 +114,58 @@ namespace TestQP.Converters
 
             return BitConverter.ToUInt16(bytes, 0);
         }
+
+        /// <summary>
+        /// 7 BCD 转 DateTime
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        public static DateTime BCDToDatetime(byte[] bytes)
+        {
+            return new DateTime(2000 + ConvertBCDToInt(bytes[0]),
+                         ConvertBCDToInt(bytes[1]),
+                         ConvertBCDToInt(bytes[2]),
+                         ConvertBCDToInt(bytes[4]),
+                         ConvertBCDToInt(bytes[5]),
+                         ConvertBCDToInt(bytes[6]));
+        }
+
+        /// <summary>
+        /// DateTime 转 7 BCD
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public static Byte[] DatetimeToBCD(DateTime date)
+        {
+            byte[] ret = new byte[7];
+            ret[0] = ConvertIntToBCD((byte)(date.Year - 2000));
+            ret[1] = ConvertIntToBCD((byte)date.Month);
+            ret[2] = ConvertIntToBCD((byte)date.Day);
+            // [3]week
+            ret[4] = ConvertIntToBCD((byte)date.Hour);
+            ret[5] = ConvertIntToBCD((byte)date.Minute);
+            ret[6] = ConvertIntToBCD((byte)date.Second);
+
+            return ret;
+        }
+
+        #region Private methods
+
+        private static byte ConvertIntToBCD(byte b)
+        {
+            byte b1 = (byte)(b / 10);
+            byte b2 = (byte)(b % 10);
+            return (byte)((b1 << 4) | b2);
+        }
+
+        public static byte ConvertBCDToInt(byte b)
+        {
+            byte b1 = (byte)((b >> 4) & 0xF);
+            byte b2 = (byte)(b & 0xF);
+
+            return (byte)(b1 * 10 + b2);
+        }
+
+        #endregion
     }
 }

@@ -167,7 +167,7 @@ namespace TestQP
             //message.MessageBody.FromBytes(loginBytes);
             message.Header = new MessageHeader()
             {
-                MessageId = (UInt16)FunctionEnum.CLIENT_LOGON,
+                MessageId = FunctionEnum.CLIENT_LOGON,
                 MessageProperty = 0x0025,
                 ProtocolVersion = 0x01,
                 Token = 0x00,
@@ -293,20 +293,20 @@ namespace TestQP
                 msg.FromBytes(item);
                 switch (msg.Header.MessageId)
                 {
-                    //case (UInt16)FunctionEnum.CLIENT_ANS:
+                    //case FunctionEnum.CLIENT_ANS:
                     //    LogHelper.LogDebug("");
                     //    break;
-                    //case (UInt16)FunctionEnum.CLIENT_LOGON:
+                    //case FunctionEnum.CLIENT_LOGON:
                     //    break;
-                    //case (UInt16)FunctionEnum.CLIENT_HEART_BEAT:
+                    //case FunctionEnum.CLIENT_HEART_BEAT:
                     //    break;
-                    case (UInt16)FunctionEnum.SERVER_ANS:
+                    case FunctionEnum.SERVER_ANS:
                         LogHelper.LogDebug("收到服务器通用应答！");
                         break;
-                    case (UInt16)FunctionEnum.SERVER_LOGIN_ANS:
+                    case FunctionEnum.SERVER_LOGIN_ANS:
                         LogHelper.LogDebug("登陆成功，系统时间为：" + (msg.MessageBody as ServerLogonAnsBody).Time.ToString("yyyy-MM-dd HH:mm:ss"));
                         break;
-                    case (UInt16)FunctionEnum.SERVER_REALTIME_DATA:
+                    case FunctionEnum.SERVER_REALTIME_DATA:
                         LogHelper.LogDebug("收到服务器实时信息！");
                         break;
                     default:

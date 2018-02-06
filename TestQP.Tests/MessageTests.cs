@@ -28,7 +28,7 @@ namespace TestQP.Tests
 
             message.Header = new MessageHeader()
             {
-                MessageId = (UInt16)FunctionEnum.CLIENT_LOGON,
+                MessageId = FunctionEnum.CLIENT_LOGON,
                 MessageProperty = 0x0025,
                 ProtocolVersion = 0x01,
                 Token = 0x00,
@@ -42,6 +42,8 @@ namespace TestQP.Tests
                 data, true);
         }
 
+        #region Header
+
         [TestMethod]
         public void TestFromBytes_Header_MsgId()
         {
@@ -50,7 +52,7 @@ namespace TestQP.Tests
             var bytes = new byte[] { 0x8E, 0x09, 0x01, 0x00, 0x12, 0x01, 0x00, 0x60, 0x00, 0x00, 0x01, 0x27, 0x6F, 0x00, 0x04, 0x06, 0x02, 0x00, 0x32, 0x8E };
             message.FromBytes(bytes);
 
-            Assert.AreEqual(0x0901, message.Header.MessageId);
+            Assert.AreEqual(FunctionEnum.SERVER_ANS, message.Header.MessageId);
         }
 
         [TestMethod]
@@ -85,5 +87,29 @@ namespace TestQP.Tests
 
             Assert.AreEqual(0x00, message.Header.Token);
         }
+
+        [TestMethod]
+        public void TestFromBytes_Header_StationId()
+        {
+            var message = new Message();
+            //8E 09 01 00 12 01 00 60 00 00 01 27 6F 00 04 06 02 00 32 8E
+            var bytes = new byte[] { 0x8E, 0x09, 0x01, 0x00, 0x12, 0x01, 0x00, 0x60, 0x00, 0x00, 0x01, 0x27, 0x6F, 0x00, 0x04, 0x06, 0x02, 0x00, 0x32, 0x8E };
+            message.FromBytes(bytes);
+
+            Assert.AreEqual(0x60000001, message.Header.StationId);
+        }
+
+        [TestMethod]
+        public void TestFromBytes_Header_SequenceNO()
+        {
+            var message = new Message();
+            //8E 09 01 00 12 01 00 60 00 00 01 27 6F 00 04 06 02 00 32 8E
+            var bytes = new byte[] { 0x8E, 0x09, 0x01, 0x00, 0x12, 0x01, 0x00, 0x60, 0x00, 0x00, 0x01, 0x27, 0x6F, 0x00, 0x04, 0x06, 0x02, 0x00, 0x32, 0x8E };
+            message.FromBytes(bytes);
+
+            Assert.AreEqual(0x276F, message.Header.SequenceNO);
+        }
+
+        #endregion
     }
 }

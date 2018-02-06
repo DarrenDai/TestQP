@@ -21,7 +21,7 @@ namespace TestQP.Tests
         {
             _header = new MessageHeader()
             {
-                MessageId = (UInt16)FunctionEnum.CLIENT_LOGON,
+                MessageId = FunctionEnum.CLIENT_LOGON,
                 MessageProperty = 0x0025,
                 ProtocolVersion = 0x01,
                 Token = 0x00,
@@ -35,7 +35,7 @@ namespace TestQP.Tests
         {
             var temp = _header.MessageId;
 
-            Assert.IsTrue((UInt16)FunctionEnum.CLIENT_LOGON == temp);
+            Assert.IsTrue(FunctionEnum.CLIENT_LOGON == temp);
         }
 
         [TestMethod]

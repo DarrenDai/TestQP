@@ -134,22 +134,22 @@ namespace TestQP.Sockets
             IMessageBody tempBody = null;
             switch (Header.MessageId)
             {
-                case (UInt16)FunctionEnum.CLIENT_ANS:
+                case FunctionEnum.CLIENT_ANS:
                     tempBody = new ClientGeneralAnsBody();
                     break;
-                case (UInt16)FunctionEnum.CLIENT_LOGON:
+                case FunctionEnum.CLIENT_LOGON:
                     tempBody = new ClientLogonBody();
                     break;
-                case (UInt16)FunctionEnum.CLIENT_HEART_BEAT:
+                case FunctionEnum.CLIENT_HEART_BEAT:
                     tempBody = new HeartBeatBody();
                     break;
-                case (UInt16)FunctionEnum.SERVER_ANS:
+                case FunctionEnum.SERVER_ANS:
                     tempBody = new ServerGeneralAnsBody();
                     break;
-                case (UInt16)FunctionEnum.SERVER_LOGIN_ANS:
+                case FunctionEnum.SERVER_LOGIN_ANS:
                     tempBody = new ServerLogonAnsBody();
                     break;
-                case (UInt16)FunctionEnum.SERVER_REALTIME_DATA:
+                case FunctionEnum.SERVER_REALTIME_DATA:
                     tempBody = new RealTimeDataBody();
                     break;
                 default:
