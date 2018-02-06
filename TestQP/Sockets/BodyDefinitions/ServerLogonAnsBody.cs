@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestQP.Constants.Enums;
 using TestQP.Converters;
 
 namespace TestQP.Sockets.BodyDefinitions
@@ -21,11 +22,11 @@ namespace TestQP.Sockets.BodyDefinitions
         /// 登录状态：0 – 成功，> 0 失败。
         /// BYTE
         /// </summary>
-        public int Status
+        public LogonResultEnmu Status
         {
             get
             {
-                return _bodyBytes[0];
+                return (LogonResultEnmu)_bodyBytes[0];
             }
             set
             {

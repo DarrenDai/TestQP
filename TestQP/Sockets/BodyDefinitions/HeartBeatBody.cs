@@ -14,6 +14,10 @@ namespace TestQP.Sockets.BodyDefinitions
 
         #endregion
 
+        #region Public Properties
+
+        #endregion
+
         #region  Interface implements
 
 

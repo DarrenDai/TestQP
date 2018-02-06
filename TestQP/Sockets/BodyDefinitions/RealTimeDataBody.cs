@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestQP.Constants.Enums;
 using TestQP.Extensions;
+using TestQP.Models;
 
 namespace TestQP.Sockets.BodyDefinitions
 {
@@ -19,25 +21,28 @@ namespace TestQP.Sockets.BodyDefinitions
 
         /// <summary>
         /// 线路ID
+        /// DWORD
         /// </summary>
         public int RouteId
         {
-            get { return _bodyBytes.GetUInt16PropertyWithOffset(0); }
+            get { return (int)_bodyBytes.GetUInt32PropertyWithOffset(0); }
             set
-            { _bodyBytes.SetUInt16PropertyWithOffset(0, (UInt16)value); }
+            { _bodyBytes.SetUInt32PropertyWithOffset(0, (UInt32)value); }
         }
 
         /// <summary>
         /// 线路方向 0 – 上行，1 – 下行
+        /// Byte
         /// </summary>
-        public int RouteDirection
+        public RouteDirectionEnum RouteDirection
         {
-            get { return _bodyBytes[4]; }
+            get { return (RouteDirectionEnum)_bodyBytes[4]; }
             set { _bodyBytes[4] = (byte)value; }
         }
 
         /// <summary>
         /// 线路上的车辆数 线路单方向上运营中的车辆数
+        /// Byte
         /// ***重要***
         ///当一条线路上的运营车辆变成0的时候，服务器会向设备推送一次此协议，且此值为0表示线路上没有运营中的车辆。
         /// </summary>
@@ -47,15 +52,10 @@ namespace TestQP.Sockets.BodyDefinitions
             set { _bodyBytes[5] = (byte)value; }
         }
 
-        //8E-09-A3-00-18-01-00-60-00-00-01-00-00- 00-00-00-02-00-00-CA-D5-B0-E0-00  -9F-8E】
-        //8E-09-A3-00-18-01-00-60-00-00-01-00-00- 00-00-00-0A-00-00-CA-D5-B0-E0-00  -97-8E】
-        //8E-09-A3-00-18-01-00-60-00-00-01-00-00- 00-00-00-14-00-00-CA-D5-B0-E0-00  -89-8E】
-        //8E-09-A3-00-18-01-00-60-00-00-01-00-00- 00-00-00-0B-00-00-CA-D5-B0-E0-00  -96-8E】
-
         /// <summary>
         /// 车辆位置[n]
         /// </summary>
-        public byte[] BusLocation
+        public List<BusLocationInfo> BusLocations
         {
             //每一辆车由2个字节表示，其结构如下：
             //第1个字节：
@@ -74,7 +74,25 @@ namespace TestQP.Sockets.BodyDefinitions
             //0000 0101 1010 0100
             //表示：
             //第5站的位置有2辆车，且该位置是当前站。
-            get { return new byte[1]; }
+            get
+            {
+                var buses = new List<BusLocationInfo>();
+                for (int i = 6; i < BusCount * 2 + 6; i = i + 2)
+                {
+                    byte location = _bodyBytes[i + 1];
+                    var temp = new BusLocationInfo();
+
+                    temp.StationNo = (int)_bodyBytes[i];
+
+                    temp.IsInstation = (location & 0x80) == 0x80;
+                    temp.StationBusCount = (int)((location & 0x70) >> 4 & 0xF);
+                    temp.IsPassed = (location & 0x08) == 0x08;
+                    temp.IsBling = (location & 0x04) == 0x04;
+
+                    buses.Add(temp);
+                }
+                return buses;
+            }
             //get { return _bodyBytes[4]; }
             //set { _bodyBytes[4] = (byte)value; }
         }
@@ -82,14 +100,19 @@ namespace TestQP.Sockets.BodyDefinitions
         /// <summary>
         /// 定制信息
         /// </summary>
-        public byte[] CustomedInfo
+        public string CustomedInfo
         {
             //墨水屏浦东公交定制版：
             //定制信息1字节，最近1辆车距离本站几分钟，FF（-1）表示待发。
             //
             //Android定制：
             //最近一辆车的状态信息。如：5站、待发等。
-            get { return new byte[1]; }
+            get
+            {
+                byte[] bytes = new byte[_bodyBytes.Length - BusCount * 2 - 6];
+                Array.Copy(_bodyBytes, BusCount * 2 + 6, bytes, 0, bytes.Length);
+                return Encoding.GetEncoding("gbk").GetString(bytes);
+            }
             //get { return _bodyBytes[4]; }
             //set { _bodyBytes[4] = (byte)value; }
         }

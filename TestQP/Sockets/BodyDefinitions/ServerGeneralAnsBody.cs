@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestQP.Constants;
+using TestQP.Constants.Enums;
 using TestQP.Extensions;
 
 namespace TestQP.Sockets.BodyDefinitions
@@ -34,9 +36,9 @@ namespace TestQP.Sockets.BodyDefinitions
         /// 对应的电子站牌消息的 ID
         /// WORD
         /// </summary>
-        public int AnsMessageId
+        public FunctionEnum AnsMessageId
         {
-            get { return _bodyBytes.GetUInt16PropertyWithOffset(2); }
+            get { return (FunctionEnum)_bodyBytes.GetUInt16PropertyWithOffset(2); }
             set
             {
                 _bodyBytes.SetUInt16PropertyWithOffset(2, (UInt16)value);
@@ -47,9 +49,9 @@ namespace TestQP.Sockets.BodyDefinitions
         /// 0：成功/确认；1：失败；2：消息有误；
         /// Byte
         /// </summary>
-        public int Result
+        public MessageResultEnum Result
         {
-            get { return _bodyBytes[4]; }
+            get { return (MessageResultEnum)_bodyBytes[4]; }
             set
             {
                 _bodyBytes[4] = (byte)value;

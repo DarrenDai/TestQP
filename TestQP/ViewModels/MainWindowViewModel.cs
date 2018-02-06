@@ -168,9 +168,9 @@ namespace TestQP
             message.Header = new MessageHeader()
             {
                 MessageId = FunctionEnum.CLIENT_LOGON,
-                MessageProperty = 0x0025,
-                ProtocolVersion = 0x01,
-                Token = 0x00,
+                //MessageProperty = 0x0025,
+                //ProtocolVersion = 0x01,
+                //Token = 0x00,
                 StationId = 0x60000001,
                 SequenceNO = 0x0004
             };
@@ -186,7 +186,7 @@ namespace TestQP
             var stream = client.GetStream();
             stream.Write(encodedMsg, 0, encodedMsg.Length);
             string data = BitConverter.ToString(encodedMsg).Replace("-", " ");
-            LogHelper.LogInfo(string.Format("Sent: {0}", data));
+            LogHelper.LogDebug(string.Format("Sent: {0}", data));
         }
 
         private void Connect(String server, int port, String message)
@@ -254,7 +254,7 @@ namespace TestQP
             // Translate data bytes to a ASCII string.
             var data = BitConverter.ToString(msg).Replace("-", " ");
             //data = System.Text.Encoding.ASCII.GetString(byteBuffer, 0, i);
-            LogHelper.LogInfo(string.Format("Received: {0}", data));
+            LogHelper.LogDebug(string.Format("Received: {0}", data));
             // byte[] msg = System.Text.Encoding.ASCII.GetBytes(data);
 
             List<byte[]> messageList = new List<byte[]>();
@@ -301,16 +301,38 @@ namespace TestQP
                     //case FunctionEnum.CLIENT_HEART_BEAT:
                     //    break;
                     case FunctionEnum.SERVER_ANS:
-                        LogHelper.LogDebug("收到服务器通用应答！");
+                        {
+                            var body = msg.MessageBody as ServerGeneralAnsBody;
+                            LogHelper.LogInfo(string.Format("收到服务器通用应答！结果：{0}，回应功能：{1}，流水号：{2}",
+                                body.Result, body.AnsMessageId, body.SequenceNO));
+                        }
                         break;
                     case FunctionEnum.SERVER_LOGIN_ANS:
-                        LogHelper.LogDebug("登陆成功，系统时间为：" + (msg.MessageBody as ServerLogonAnsBody).Time.ToString("yyyy-MM-dd HH:mm:ss"));
+                        {
+                            var body = (msg.MessageBody as ServerLogonAnsBody);
+                            LogHelper.LogInfo(string.Format("登陆成功，登录结果:{0}，服务端系统时间为：{1}",
+                                body.Status.ToString(),
+                               body.Time.ToString("yyyy-MM-dd HH:mm:ss")));
+                        }
                         break;
                     case FunctionEnum.SERVER_REALTIME_DATA:
-                        LogHelper.LogDebug("收到服务器实时信息！");
+                        {
+                            var body = msg.MessageBody as RealTimeDataBody;
+                            var str = string.Empty;
+                            foreach (var bus in body.BusLocations)
+                            {
+                                str += string.Format("\t\t\t\t\t\t站点序号：{0}，站内：{1}，过站：{2}，闪烁：{3}\r\n",
+                                      bus.StationNo, bus.IsInstation, bus.IsPassed, bus.IsBling);
+                            }
+
+                            LogHelper.LogInfo(string.Format("收到服务器实时信息！路线ID：{0}，路线方向{1}，班车数量：{2},定制信息：【{3}】,详情：\r\n{4}"
+                                , body.RouteId, body.RouteDirection, body.BusCount, body.CustomedInfo, str));
+
+                        }
+
                         break;
                     default:
-                        LogHelper.LogDebug("收到服务器信息............");
+                        LogHelper.LogDebug("收到服务器信息...........XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.");
                         break;
                 }
             }
