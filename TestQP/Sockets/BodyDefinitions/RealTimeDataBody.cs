@@ -111,7 +111,7 @@ namespace TestQP.Sockets.BodyDefinitions
             {
                 byte[] bytes = new byte[_bodyBytes.Length - BusCount * 2 - 6];
                 Array.Copy(_bodyBytes, BusCount * 2 + 6, bytes, 0, bytes.Length);
-                return Encoding.GetEncoding("gbk").GetString(bytes);
+                return Encoding.GetEncoding("gbk").GetString(bytes).Trim('\0');
             }
             //get { return _bodyBytes[4]; }
             //set { _bodyBytes[4] = (byte)value; }

@@ -13,8 +13,7 @@ namespace TestQP.Utils
         public ResponseObject GetStationInfo()
         {
             var temp = DoHttpGet("");
-            var t = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseObject>(temp);
-            return t;
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseObject>(temp);
         }
 
         #region Private methods

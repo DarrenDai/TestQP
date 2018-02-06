@@ -2,15 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Configuration;
-using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Net.Sockets;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TestQP.Constants;
@@ -114,8 +108,8 @@ namespace TestQP
                         RouteNo = item.name,
                         StartStation = item.from,
                         EndStation = item.to,
-                        StartStationTimeRange = string.Format("{0}- {1}", item.first, item.last),
-                        EndStationTimeRange = string.Format("{0}- {1}", item.first, item.last),
+                        StartStationTimeRange = string.Format("{0} - {1}", item.first, item.last),
+                        EndStationTimeRange = string.Format("{0} - {1}", item.first, item.last),
                     };
 
                     // routeInfo.Stations = item.stops.Select(x => new StationPoint() { Name = x.name, Order = x.order }).ToList();
@@ -391,38 +385,20 @@ namespace TestQP
         private void UpdateViewData(RealTimeDataBody body)
         {
             var locations = body.BusLocations;
-            //if (!BusRoutes.Any(x => x.RouteId == body.RouteId))
-            //{
-            //    var routeInfo = new BusRouteInfo()
-            //    {
-            //        RouteId = body.RouteId,
-            //        RouteNo = body.RouteId.ToString(),
-            //        StartStation = "浦东",
-            //        EndStation = "浦西",
-            //        StartStationTimeRange = "6:00-9:00",
-            //        EndStationTimeRange = "06:00-09:00"
-            //    };
-
-            //    for (int i = 0; i < 20; i++)
-            //    {
-            //        routeInfo.Stations.Add(new StationPoint() { Name = i.ToString() + "这里是哪哪哪！！" });
-            //    }
-
-            //    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-            //    {
-            //        BusRoutes.Add(routeInfo);
-            //    }));
-
-            //}
-            //else
-            //{
-
-            //}
-
-            //foreach (var item in locations)
-            //{
-
-            //}
+            var routeInfo = BusRoutes.FirstOrDefault(x => x.RouteId == body.RouteId);
+            if (routeInfo != null)
+            {
+                routeInfo.CustomedInfo = body.CustomedInfo;
+                foreach (var item in locations)
+                {
+                    //item.CustomedString
+                    var stationPoint = routeInfo.Stations.FirstOrDefault(x => x.Order == item.StationNo);
+                    if (stationPoint != null)
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => { stationPoint.IsBling = true; }));
+                    }
+                }
+            }
         }
 
         #endregion

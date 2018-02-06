@@ -24,13 +24,22 @@
                             <DataTemplate>
                                 <DataTemplate.Resources>
                                     <Style TargetType="TextBlock">
-                                        <Setter Property="FontSize" Value="15"/>
+                                        <Setter Property="FontSize" Value="14"/>
                                         <Setter Property="Foreground" Value="White" />
                                         <Setter Property="HorizontalAlignment" Value="Center" />
                                         <Setter Property="VerticalAlignment" Value="Center" />
                                     </Style>
                                 </DataTemplate.Resources>
-                                <Border Background="#FF2C48C6" Margin="0 0 0 15">
+                                <Border Margin="0 0 0 15">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="30" Color="#FF4635C5" ShadowDepth="14"/>
+                                    </Border.Effect>
+                                    <Border.Background>
+                                        <LinearGradientBrush EndPoint="0.419,0.87" StartPoint="0.42,-0.091">
+                                            <GradientStop Color="#FF7A8AFF" Offset="0.026"/>
+                                            <GradientStop Color="#FF1C31D3" Offset="0.516"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
                                     <Grid Margin="4">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
@@ -45,11 +54,11 @@
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
-                                            <TextBlock Grid.Row="0" Text="{Binding RouteNo}" FontSize="55"/>
+                                            <TextBlock Grid.Row="0" Text="{Binding RouteNo}" FontSize="50"/>
                                             <TextBlock Grid.Row="1" Text="{Binding StartStation}" HorizontalAlignment="Left"/>
-                                            <TextBlock Grid.Row="2" Text="{Binding StartStationTimeRange}" Margin="20 10 0 10"/>
+                                            <TextBlock Grid.Row="2" Text="{Binding StartStationTimeRange}" Margin="20 5 0 5"/>
                                             <TextBlock Grid.Row="3" Text="{Binding EndStation}" HorizontalAlignment="Left"/>
-                                            <TextBlock Grid.Row="4" Text="{Binding EndStationTimeRange}" Margin="20 10 0 10"/>
+                                            <TextBlock Grid.Row="4" Text="{Binding EndStationTimeRange}" Margin="20 5 0 5"/>
                                         </Grid>
                                         <Grid Grid.Column="1">
                                             <ListBox ItemsSource="{Binding Stations}" VerticalAlignment="Stretch" Background="#FF0566D9"
@@ -64,7 +73,7 @@
                                                     <DataTemplate>
                                                         <DataTemplate.Resources>
                                                             <Style TargetType="TextBlock">
-                                                                <Setter Property="FontSize" Value="16"/>
+                                                                <Setter Property="FontSize" Value="14"/>
                                                                 <Setter Property="Foreground" Value="White" />
                                                                 <Setter Property="HorizontalAlignment" Value="Center" />
                                                                 <Setter Property="VerticalAlignment" Value="Top" />
@@ -75,10 +84,33 @@
                                                                 <RowDefinition Height="Auto"/>
                                                                 <RowDefinition Height="Auto"/>
                                                             </Grid.RowDefinitions>
-                                                            <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Width="20" FontSize="14">
+                                                            <Ellipse Grid.Row="0"
+                                                                     Height="16" Width="16" 
+                                                                     Stroke="Transparent" VerticalAlignment="Top" >
+                                                                <Ellipse.Style>
+                                                                    <Style TargetType="Ellipse">
+                                                                        <Setter Property="Fill" Value="#FFF4F4F5"/>
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding IsBling}" Value="True">
+                                                                                <Setter Property="Fill" Value="#FF00FF00"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Ellipse.Style>
+                                                            </Ellipse>
+                                                            <TextBlock Grid.Row="1" Text="{Binding Name}" TextWrapping="Wrap" Width="12" FontSize="12">
                                                                 <!--<TextBlock.LayoutTransform>
                                                                     <RotateTransform Angle="90"/>
                                                                 </TextBlock.LayoutTransform>-->
+                                                                <TextBlock.Style>
+                                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding IsBling}" Value="True">
+                                                                                <Setter Property="Foreground" Value="Green"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </TextBlock.Style>
                                                             </TextBlock>
                                                         </Grid>
                                                     </DataTemplate>
@@ -92,8 +124,8 @@
                                                 <RowDefinition Height="*"/>
 
                                             </Grid.RowDefinitions>
-                                            <TextBlock Grid.Row="0" Text="距离本站" HorizontalAlignment="Left"/>
-                                            <TextBlock Grid.Row="1" Text="待发" FontSize="35"/>
+                                            <TextBlock Grid.Row="0" Text="信息" HorizontalAlignment="Left"/>
+                                            <TextBlock Grid.Row="1" Text="{Binding CustomedInfo}" FontSize="35"/>
                                             <TextBlock Grid.Row="2" Text="12:00" FontSize="35"/>
                                         </Grid>
                                     </Grid>

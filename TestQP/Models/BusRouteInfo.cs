@@ -15,6 +15,7 @@ namespace TestQP.Models
         private string _startStationTimeRange;
         private string _endStationTimeRange;
         private List<StationPoint> _stations = new List<StationPoint>();
+        private string _customedInfo = "信息";
 
         public int RouteId
         {
@@ -58,5 +59,10 @@ namespace TestQP.Models
             set { _stations = value; }
         }
 
+        public string CustomedInfo
+        {
+            get { return _customedInfo; }
+            set { _customedInfo = value; OnPropertyChanged(() => CustomedInfo); }
+        }
     }
 }

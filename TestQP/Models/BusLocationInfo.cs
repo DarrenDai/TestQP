@@ -48,13 +48,13 @@ namespace TestQP.Models
             set { _isBling = value; OnPropertyChanged(() => IsBling); }
         }
 
-        private string _customedString;
+        //private string _customedString;
 
-        public string CustomedString
-        {
-            get { return _customedString; }
-            set { _customedString = value; OnPropertyChanged(() => CustomedString); }
-        }
+        //public string CustomedString
+        //{
+        //    get { return _customedString; }
+        //    set { _customedString = value; OnPropertyChanged(() => CustomedString); }
+        //}
 
     }
 }
