@@ -22,7 +22,14 @@ namespace TestQP.Models
         public bool IsBling
         {
             get { return _isBling; }
-            set { _isBling = value; OnPropertyChanged(() => IsBling); }
+            set
+            {
+                if (_isBling != value)
+                {
+                    _isBling = value;
+                    OnPropertyChanged(() => IsBling);
+                }
+            }
         }
 
         private int _order;
@@ -33,6 +40,13 @@ namespace TestQP.Models
             set { _order = value; OnPropertyChanged(() => Order); }
         }
 
+        private bool _isCurrentStation;
+
+        public bool IsCurrentStation
+        {
+            get { return _isCurrentStation; }
+            set { _isCurrentStation = value; }
+        }
 
     }
 }

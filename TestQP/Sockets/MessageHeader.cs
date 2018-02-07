@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,8 @@ namespace TestQP.Sockets
 
         public const uint HeaderLength = (2 + 2 + 1 + 1 + 4 + 2); //12 bytes
         private byte[] _header = new byte[HeaderLength];
+
+        private string _stationIdStr = ConfigurationManager.AppSettings["StationId"];
 
         #endregion
 

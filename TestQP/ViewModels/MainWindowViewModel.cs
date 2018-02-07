@@ -22,6 +22,10 @@ namespace TestQP
         private string _serverAddress = ConfigurationManager.AppSettings["ServerAddress"];
         private int _serverPort = int.Parse(ConfigurationManager.AppSettings["ServerPort"]);
 
+        private string _currentStationId = ConfigurationManager.AppSettings["StationId"];
+        private string _currentStationName;
+        private string _output;
+
         private TcpClient _client = null;
 
         private ObservableCollection<BusRouteInfo> _busRoutes = new ObservableCollection<BusRouteInfo>();
@@ -46,7 +50,20 @@ namespace TestQP
 
         #region Pulic properties
 
-        private string _output;
+        public string CurrentStationId
+        {
+            get { return _currentStationId; }
+        }
+
+        public string CurrentStationName
+        {
+            get { return _currentStationName; }
+            set
+            {
+                _currentStationName = value;
+                OnPropertyChanged(() => CurrentStationName);
+            }
+        }
 
         public string Output
         {
@@ -100,6 +117,8 @@ namespace TestQP
             Task.Factory.StartNew(() =>
             {
                 _data = new RestfulHelper().GetStationInfo();
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => { CurrentStationName = _data.name; }));
+
                 foreach (var item in _data.lines)
                 {
                     var routeInfo = new BusRouteInfo()
@@ -119,7 +138,7 @@ namespace TestQP
                     foreach (var stopItem in item.stops)
                     {
                         if (tempList.Any(x => x.Order == stopItem.order)) continue;
-                        tempList.Add(new StationPoint() { Name = stopItem.name, Order = stopItem.order });
+                        tempList.Add(new StationPoint() { Name = stopItem.name, Order = stopItem.order, IsCurrentStation = stopItem.name == _data.name });
                     }
 
                     System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -389,6 +408,12 @@ namespace TestQP
             if (routeInfo != null)
             {
                 routeInfo.CustomedInfo = body.CustomedInfo;
+
+                foreach (var item in routeInfo.Stations)
+                {
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => { item.IsBling = false; }));
+                }
+
                 foreach (var item in locations)
                 {
                     //item.CustomedString

@@ -9,6 +9,75 @@
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>-->
+
+        <DataTemplate x:Key="StopDataTempate">
+            <DataTemplate.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="FontSize" Value="14"/>
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="VerticalAlignment" Value="Top" />
+                </Style>
+                <Storyboard x:Key="BlingStory">
+                    <ColorAnimation Storyboard.TargetName="stopText"
+                          Storyboard.TargetProperty="Foreground.Color"
+                          From="White"
+                          To="Red"
+                          Duration="0:0:0.4"
+                          AutoReverse="True"
+                          RepeatBehavior="Forever" />
+                    <ColorAnimation Storyboard.TargetName="stopEllipse"
+                          Storyboard.TargetProperty="Fill.Color"
+                          From="White"
+                          To="Red"
+                          Duration="0:0:0.4"
+                          AutoReverse="True"
+                          RepeatBehavior="Forever" />
+                </Storyboard>
+            </DataTemplate.Resources>
+            <Grid Margin="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Ellipse x:Name="stopEllipse" Grid.Row="0"
+                         Height="16" Width="16" Fill="White"
+                         Stroke="Transparent" VerticalAlignment="Top" >
+                    <Ellipse.Style>
+                        <Style TargetType="Ellipse">
+                            <Setter Property="Fill" Value="#FFF4F4F5"/>
+                            <!--<Style.Triggers>
+                                <DataTrigger Binding="{Binding IsBling}" Value="True">
+                                    <Setter Property="Fill" Value="#FF00FF00"/>
+                                </DataTrigger>
+                            </Style.Triggers>-->
+                        </Style>
+                    </Ellipse.Style>
+                </Ellipse>
+                <TextBlock x:Name="stopText" Grid.Row="1" Text="{Binding Name}" TextWrapping="Wrap" Width="12" FontSize="12"/>
+            </Grid>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsBling}" Value="True">
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard x:Name="bilingStoryInstance" Storyboard="{StaticResource BlingStory}"/>
+                    </DataTrigger.EnterActions>
+                    <DataTrigger.ExitActions>
+                        <RemoveStoryboard BeginStoryboardName="bilingStoryInstance"/>
+                    </DataTrigger.ExitActions>
+                </DataTrigger>
+                <!--<DataTrigger Binding="{Binding IsBling}" Value="True">
+                    <Setter Property="Foreground" Value="Red" TargetName="stopText"/>
+                    <Setter Property="Fill" Value="Red" TargetName="stopEllipse"/>
+                </DataTrigger>-->
+
+                <DataTrigger Binding="{Binding IsCurrentStation}" Value="True">
+                    <Setter Property="Foreground" Value="#FFFC088B" TargetName="stopText"/>
+                    <Setter Property="FontWeight" Value="Bold" TargetName="stopText"/>
+                    <Setter Property="FontSize" Value="16" TargetName="stopText"/>
+                    <Setter Property="Width" Value="16" TargetName="stopText"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
     </Window.Resources>
     <Grid Margin="4">
         <TabControl>
@@ -60,61 +129,17 @@
                                             <TextBlock Grid.Row="3" Text="{Binding EndStation}" HorizontalAlignment="Left"/>
                                             <TextBlock Grid.Row="4" Text="{Binding EndStationTimeRange}" Margin="20 5 0 5"/>
                                         </Grid>
-                                        <Grid Grid.Column="1">
-                                            <ListBox ItemsSource="{Binding Stations}" VerticalAlignment="Stretch" Background="#FF0566D9"
-                                                     VerticalContentAlignment="Top">
+                                        <Grid Grid.Column="1" Background="#FF0566D9">
+                                            <Border Background="White" Height="4" Margin="5 10" VerticalAlignment="Top"/>
+                                            <ListBox ItemsSource="{Binding Stations}" VerticalAlignment="Stretch" Background="Transparent"
+                                                     IsHitTestVisible="False"
+                                                     VerticalContentAlignment="Top" ItemTemplate="{StaticResource StopDataTempate}">
                                                 <ListBox.ItemsPanel>
                                                     <ItemsPanelTemplate>
                                                         <!--<StackPanel Orientation="Horizontal"/>-->
                                                         <WrapPanel />
                                                     </ItemsPanelTemplate>
                                                 </ListBox.ItemsPanel>
-                                                <ListBox.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <DataTemplate.Resources>
-                                                            <Style TargetType="TextBlock">
-                                                                <Setter Property="FontSize" Value="14"/>
-                                                                <Setter Property="Foreground" Value="White" />
-                                                                <Setter Property="HorizontalAlignment" Value="Center" />
-                                                                <Setter Property="VerticalAlignment" Value="Top" />
-                                                            </Style>
-                                                        </DataTemplate.Resources>
-                                                        <Grid Margin="2">
-                                                            <Grid.RowDefinitions>
-                                                                <RowDefinition Height="Auto"/>
-                                                                <RowDefinition Height="Auto"/>
-                                                            </Grid.RowDefinitions>
-                                                            <Ellipse Grid.Row="0"
-                                                                     Height="16" Width="16" 
-                                                                     Stroke="Transparent" VerticalAlignment="Top" >
-                                                                <Ellipse.Style>
-                                                                    <Style TargetType="Ellipse">
-                                                                        <Setter Property="Fill" Value="#FFF4F4F5"/>
-                                                                        <Style.Triggers>
-                                                                            <DataTrigger Binding="{Binding IsBling}" Value="True">
-                                                                                <Setter Property="Fill" Value="#FF00FF00"/>
-                                                                            </DataTrigger>
-                                                                        </Style.Triggers>
-                                                                    </Style>
-                                                                </Ellipse.Style>
-                                                            </Ellipse>
-                                                            <TextBlock Grid.Row="1" Text="{Binding Name}" TextWrapping="Wrap" Width="12" FontSize="12">
-                                                                <!--<TextBlock.LayoutTransform>
-                                                                    <RotateTransform Angle="90"/>
-                                                                </TextBlock.LayoutTransform>-->
-                                                                <TextBlock.Style>
-                                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                                                        <Style.Triggers>
-                                                                            <DataTrigger Binding="{Binding IsBling}" Value="True">
-                                                                                <Setter Property="Foreground" Value="Green"/>
-                                                                            </DataTrigger>
-                                                                        </Style.Triggers>
-                                                                    </Style>
-                                                                </TextBlock.Style>
-                                                            </TextBlock>
-                                                        </Grid>
-                                                    </DataTemplate>
-                                                </ListBox.ItemTemplate>
                                             </ListBox>
                                             <Grid Opacity="0.5">
                                                 <Grid.ColumnDefinitions>
@@ -122,14 +147,15 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <StackPanel  Grid.Row="1" Grid.ColumnSpan="3" Orientation="Horizontal"
+
+                                                <StackPanel Grid.ColumnSpan="3" Orientation="Horizontal"
                                                              VerticalAlignment="Bottom" HorizontalAlignment="Center"  Margin="0 0 0 20">
                                                     <TextBlock Text="开往 "/>
                                                     <TextBlock Text="{Binding EndStation}" Opacity="0.9"/>
                                                 </StackPanel>
 
-                                                <Border Grid.Row="2" Height="7" Background="#FFFFFFFF" VerticalAlignment="Bottom"  Margin="30 0 0 10"/>
-                                                <Path Grid.Row="2" Grid.Column="1" Data="M298.8,214.6 L418.29999,214.6 297.49999,160.50001 z"
+                                                <Border Height="7" Background="#FFFFFFFF" VerticalAlignment="Bottom"  Margin="30 0 0 10"/>
+                                                <Path Grid.Column="1" Data="M298.8,214.6 L418.29999,214.6 297.49999,160.50001 z"
                                                       Margin="-3 0 30 10" Height="14" Width="80"
                                                       Fill="#FFFFFFFF" HorizontalAlignment="Left"  VerticalAlignment="Bottom"
                                                      
@@ -169,16 +195,23 @@
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition/>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Row="0" Text="本站ID：" />
                             <TextBlock Grid.Row="1" Text="线路车辆：" />
                             <TextBlock Grid.Row="2" Text="上行车辆：" />
 
-                            <Button Grid.Row="0" Grid.Column="1" Command="{Binding ConnectCommand}" Content="Connect"/>
-                            <Button Grid.Row="1" Grid.Column="1" Command="{Binding DisConnectCommand}" Content="Disconnect" Margin="0 5"/>
-                            <Button Grid.Row="2" Grid.Column="1" Command="{Binding HeartBeatCommand}" Content="HeartBeat"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CurrentStationId}" HorizontalAlignment="Left"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="000"  HorizontalAlignment="Left"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding CurrentStationName}"  HorizontalAlignment="Left"/>
+
+                            <Button Grid.Row="0" Grid.Column="4" Command="{Binding ConnectCommand}" Content="Connect"/>
+                            <Button Grid.Row="1" Grid.Column="4" Command="{Binding DisConnectCommand}" Content="Disconnect" Margin="0 5"/>
+                            <Button Grid.Row="2" Grid.Column="4" Command="{Binding HeartBeatCommand}" Content="HeartBeat"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox Grid.Row="1" Header="Debug Info" Margin="0 7 0 0" Padding="4">
