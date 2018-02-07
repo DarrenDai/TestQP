@@ -9,15 +9,17 @@ namespace TestQP.Models
     public class StationPoint : NotifyObject
     {
         private string _name;
+        private bool _isBling;
+        private int _order;
+        private bool _isCurrentStation;
+
+        //private bool _is
 
         public string Name
         {
             get { return _name; }
             set { _name = value; OnPropertyChanged(() => Name); }
         }
-
-
-        private bool _isBling;
 
         public bool IsBling
         {
@@ -32,15 +34,11 @@ namespace TestQP.Models
             }
         }
 
-        private int _order;
-
         public int Order
         {
             get { return _order; }
             set { _order = value; OnPropertyChanged(() => Order); }
         }
-
-        private bool _isCurrentStation;
 
         public bool IsCurrentStation
         {

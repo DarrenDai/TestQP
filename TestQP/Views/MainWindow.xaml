@@ -203,7 +203,7 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Row="0" Text="本站ID：" />
                             <TextBlock Grid.Row="1" Text="线路车辆：" />
-                            <TextBlock Grid.Row="2" Text="上行车辆：" />
+                            <TextBlock Grid.Row="2" Text="本站名称：" />
 
                             <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CurrentStationId}" HorizontalAlignment="Left"/>
                             <TextBlock Grid.Row="1" Grid.Column="1" Text="000"  HorizontalAlignment="Left"/>

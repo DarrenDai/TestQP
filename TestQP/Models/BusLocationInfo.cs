@@ -9,6 +9,10 @@ namespace TestQP.Models
     public class BusLocationInfo : NotifyObject
     {
         private int _stationNo;
+        private bool _isInstation;
+        private int _stationBusCount;
+        private bool _isPassed;
+        private bool _isBling;
 
         public int StationNo
         {
@@ -16,15 +20,11 @@ namespace TestQP.Models
             set { _stationNo = value; OnPropertyChanged(() => StationNo); }
         }
 
-        private bool _isInstation;
-
         public bool IsInstation
         {
             get { return _isInstation; }
             set { _isInstation = value; OnPropertyChanged(() => IsInstation); }
         }
-
-        private int _stationBusCount;
 
         public int StationBusCount
         {
@@ -32,15 +32,11 @@ namespace TestQP.Models
             set { _stationBusCount = value; OnPropertyChanged(() => StationBusCount); }
         }
 
-        private bool _isPassed;
-
         public bool IsPassed
         {
             get { return _isPassed; }
             set { _isPassed = value; OnPropertyChanged(() => IsPassed); }
         }
-
-        private bool _isBling;
 
         public bool IsBling
         {

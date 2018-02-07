@@ -387,8 +387,8 @@ namespace TestQP
                             var str = string.Empty;
                             foreach (var bus in body.BusLocations)
                             {
-                                str += string.Format("\t\t\t\t\t\t站点序号：{0}，站内：{1}，过站：{2}，闪烁：{3}\r\n",
-                                      bus.StationNo, bus.IsInstation, bus.IsPassed, bus.IsBling);
+                                str += string.Format("\t\t\t\t\t\t站点序号：{0}，站内：{1}，过站：{2}，闪烁：{3}，本站车数量{4}\r\n",
+                                      bus.StationNo, bus.IsInstation, bus.IsPassed, bus.IsBling, bus.StationBusCount);
                             }
 
                             LogHelper.LogInfo(string.Format("收到服务器实时信息！路线ID：{0}，路线方向{1}，班车数量：{2},定制信息：【{3}】,详情：\r\n{4}"
