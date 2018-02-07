@@ -138,7 +138,12 @@ namespace TestQP
                     foreach (var stopItem in item.stops)
                     {
                         if (tempList.Any(x => x.Order == stopItem.order)) continue;
-                        tempList.Add(new StationPoint() { Name = stopItem.name, Order = stopItem.order, IsCurrentStation = stopItem.name == _data.name });
+                        tempList.Add(new StationPoint()
+                        {
+                            Name = stopItem.name,
+                            Order = stopItem.order,
+                            IsCurrentStation = stopItem.order == item.order
+                        });
                     }
 
                     System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -232,7 +237,7 @@ namespace TestQP
                 //MessageProperty = 0x0025,
                 //ProtocolVersion = 0x01,
                 //Token = 0x00,
-                StationId = 0x60000001,
+                // StationNo = 0x60000001,
                 SequenceNO = 0x0004
             };
 

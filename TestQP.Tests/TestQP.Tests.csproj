@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="BodyDefinitions\TestClientLogonBody.cs" />
     <Compile Include="BodyDefinitions\TestServerLogonAnsBody.cs" />
+    <Compile Include="Converters\ByteConverterTests.cs" />
     <Compile Include="Utils\BytesCoderTests.cs" />
     <Compile Include="MessageTests.cs" />
     <Compile Include="MesssageHeaderTests.cs" />

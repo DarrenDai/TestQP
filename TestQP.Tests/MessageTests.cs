@@ -32,7 +32,7 @@ namespace TestQP.Tests
                 MessageProperty = 0x0025,
                 ProtocolVersion = 0x01,
                 Token = 0x00,
-                StationId = 0x60000001,
+                StationNo = "60000001",
                 SequenceNO = 0x0004
             };
 
@@ -89,14 +89,14 @@ namespace TestQP.Tests
         }
 
         [TestMethod]
-        public void TestFromBytes_Header_StationId()
+        public void TestFromBytes_Header_StationNo()
         {
             var message = new Message();
             //8E 09 01 00 12 01 00 60 00 00 01 27 6F 00 04 06 02 00 32 8E
             var bytes = new byte[] { 0x8E, 0x09, 0x01, 0x00, 0x12, 0x01, 0x00, 0x60, 0x00, 0x00, 0x01, 0x27, 0x6F, 0x00, 0x04, 0x06, 0x02, 0x00, 0x32, 0x8E };
             message.FromBytes(bytes);
 
-            Assert.AreEqual(0x60000001, message.Header.StationId);
+            Assert.AreEqual("60000001", message.Header.StationNo, true);
         }
 
         [TestMethod]

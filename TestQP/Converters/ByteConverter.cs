@@ -67,21 +67,13 @@ namespace TestQP.Converters
             return (BitConverter.ToUInt32(t, 0));
         }
 
-        /// <summary>
-        /// 没有指定起始索引
-        /// </summary>
-        /// <param name="bytes"></param>
-        /// <returns></returns>
+        #region bytes int
+
         public static UInt32 BytesToUInt32(byte[] bytes)
         {
             return (BytesToUInt32(bytes, 0));
         }
 
-        /// <summary>
-        /// 转换整形数据网络次序的字节数组
-        /// </summary>
-        /// <param name="val"></param>
-        /// <returns></returns>
         public static byte[] UInt32ToBytes(UInt32 val)
         {
             byte[] t = BitConverter.GetBytes(val);
@@ -114,6 +106,10 @@ namespace TestQP.Converters
 
             return BitConverter.ToUInt16(bytes, 0);
         }
+
+        #endregion
+
+        #region BCD Datetime
 
         /// <summary>
         /// 7 BCD 转 DateTime
@@ -148,6 +144,68 @@ namespace TestQP.Converters
 
             return ret;
         }
+
+        #endregion
+
+        #region BCD STRING
+
+        /// <summary>
+        /// 60000001 to 0x60, 0x00, 0x00, 0x01 
+        /// </summary>
+        /// <param name="bcd"></param>
+        /// <returns></returns>
+        public static byte[] BCDStringToBytes(string bcd)
+        {
+            var bytes = new byte[bcd.Length / 2];
+            var chars = bcd.ToArray();
+            int counter = 0;
+            for (int i = 0; i < chars.Length; i = i + 2)
+            {
+                byte a = (byte)((GetByteFromChar(chars[i])) << 4);
+                byte b = GetByteFromChar(chars[i + 1]);
+
+                bytes[counter++] = (byte)(a | b);
+            }
+
+            return bytes;
+        }
+
+        private static byte GetByteFromChar(char c)
+        {
+            //0x30 ==0
+            if (c >= '0' && c <= '9')
+            {
+                return (byte)((byte)c - 0x30);
+            }
+
+            //0x41==A
+            if (c >= 'A' && c <= 'Z')
+            {
+                return (byte)((byte)c - 0x41 + 10);
+            }
+
+            //0x61==a
+            if (c >= 'a' && c <= 'z')
+            {
+                return (byte)((byte)c - 0x61 + 10);
+            }
+
+            return 0x00;
+        }
+
+        /// <summary>
+        /// 0x60, 0x00, 0x00, 0x01 to 60000001
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        public static string BCDBytesToString(byte[] bytes)
+        {
+            var retString = BitConverter.ToString(bytes).Replace("-", "");
+
+            return retString;
+        }
+
+        #endregion
 
         #region Private methods
 

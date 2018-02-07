@@ -25,8 +25,6 @@ namespace TestQP.Sockets
         public const uint HeaderLength = (2 + 2 + 1 + 1 + 4 + 2); //12 bytes
         private byte[] _header = new byte[HeaderLength];
 
-        private string _stationIdStr = ConfigurationManager.AppSettings["StationId"];
-
         #endregion
 
         #region Constructor
@@ -37,7 +35,8 @@ namespace TestQP.Sockets
             MessageProperty = 0x0025;
             ProtocolVersion = 0x01;
             Token = 0x00;
-            StationId = 0x60000001;
+            //strin to BCD
+            StationNo = ConfigurationManager.AppSettings["StationId"];
             SequenceNO = 0x0004;
         }
 
@@ -101,13 +100,13 @@ namespace TestQP.Sockets
         /// <summary>
         /// 电子站牌标识	 BCD[4]
         /// </summary>
-        public int StationId
+        public string StationNo
         {
-            get { return (int)_header.GetUInt32PropertyWithOffset(6); }
+            get { return _header.GetBCDStringWithOffset(6, 4); }
             set
             {
                 // _stationId = (UInt32)value;
-                _header.SetUInt32PropertyWithOffset(6, (UInt32)value);
+                _header.SetBCDFromStringWithOffset(value, 6);
             }
         }
 

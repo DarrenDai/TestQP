@@ -25,7 +25,7 @@ namespace TestQP.Tests
                 MessageProperty = 0x0025,
                 ProtocolVersion = 0x01,
                 Token = 0x00,
-                StationId = 0x60000001,
+                StationNo = "60000001",
                 SequenceNO = 0x0004
             };
         }
@@ -63,11 +63,11 @@ namespace TestQP.Tests
         }
 
         [TestMethod]
-        public void TestPropertyStationId()
+        public void TestPropertyStationNo()
         {
-            var temp = _header.StationId;
+            var temp = _header.StationNo;
 
-            Assert.IsTrue(0x60000001 == temp);
+            Assert.IsTrue("60000001" == temp);
         }
 
         [TestMethod]
