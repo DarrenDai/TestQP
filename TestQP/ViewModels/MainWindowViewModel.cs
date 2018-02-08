@@ -285,7 +285,7 @@ namespace TestQP
             {
                 MessageId = FunctionEnum.CLIENT_HEART_BEAT,
                 Token = _clientToken,
-                SequenceNO = Interlocked.Increment(ref _clientSquenceNO) 
+                SequenceNO = Interlocked.Increment(ref _clientSquenceNO)
             };
 
             LogHelper.LogInfo(string.Format("时间到了，心跳一下! Token:{0}, SeqeneceNo:{1}", message.Header.Token, message.Header.SequenceNO));
@@ -444,13 +444,6 @@ namespace TestQP
                 msg.FromBytes(item);
                 switch (msg.Header.MessageId)
                 {
-                    //case FunctionEnum.CLIENT_ANS:
-                    //    LogHelper.LogDebug("");
-                    //    break;
-                    //case FunctionEnum.CLIENT_LOGON:
-                    //    break;
-                    //case FunctionEnum.CLIENT_HEART_BEAT:
-                    //    break;
                     case FunctionEnum.SERVER_ANS:
                         {
                             var body = msg.MessageBody as ServerGeneralAnsBody;
@@ -477,11 +470,11 @@ namespace TestQP
                             var str = string.Empty;
                             foreach (var bus in body.BusLocations)
                             {
-                                str += string.Format("\t\t\t\t\t\t站点序号：{0}，站内：{1}，过站：{2}，闪烁：{3}，本站车数量{4}\r\n",
+                                str += string.Format(" 【站点序号：{0}，站内：{1}，过站：{2}，闪烁：{3}，本站车数量{4}】 ",
                                       bus.StationNo, bus.IsInstation, bus.IsPassed, bus.IsBling, bus.StationBusCount);
                             }
 
-                            LogHelper.LogInfo(string.Format("收到服务器实时信息！路线ID：{0}，路线方向{1}，班车数量：{2},定制信息：【{3}】,详情：\r\n{4}"
+                            LogHelper.LogInfo(string.Format("收到服务器实时信息！ 路线ID：{0}，路线方向{1}，班车数量：{2},定制信息：【{3}】,详情：{4} "
                                 , body.RouteId, body.RouteDirection, body.BusCount, body.CustomedInfo, str));
 
                             //Anser it
@@ -491,7 +484,7 @@ namespace TestQP
 
                         break;
                     default:
-                        LogHelper.LogDebug("收到服务器信息...........XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.");
+                        LogHelper.LogDebug("收到服务器信息....暂时不认识.......XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.");
                         break;
                 }
             }

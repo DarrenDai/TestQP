@@ -25,7 +25,7 @@ namespace TestQP.Tests
                 MessageProperty = 0x0025,
                 // ProtocolVersion = 0x01,
                 Token = 0x00,
-                //StationNo = "60000001",
+                StationNo = "60000001",
                 //SequenceNO = 0x0004
             };
         }

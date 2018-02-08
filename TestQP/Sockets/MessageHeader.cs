@@ -103,7 +103,7 @@ namespace TestQP.Sockets
         public string StationNo
         {
             get { return _header.GetBCDStringWithOffset(6, 4); }
-            private set
+            set //private
             {
                 // _stationId = (UInt32)value;
                 _header.SetBCDFromStringWithOffset(value, 6);

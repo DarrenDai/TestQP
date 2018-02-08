@@ -231,6 +231,7 @@
                     </GroupBox>
                     <GroupBox Grid.Row="1" Header="Debug Info" Margin="0 7 0 0" Padding="4">
                         <TextBox  Text="{Binding Output}" IsReadOnly="True" TextWrapping="Wrap" Foreground="Blue"
+                                  HorizontalScrollBarVisibility="Auto"
                                   AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
                     </GroupBox>
                 </Grid>
