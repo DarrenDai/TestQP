@@ -5,7 +5,9 @@ using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Linq;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using TestQP.Constants;
 using TestQP.Constants.Enums;
@@ -26,17 +28,21 @@ namespace TestQP
         private string _currentStationId = ConfigurationManager.AppSettings["StationId"];
         private string _currentStationName;
         private string _output;
+        private bool _isRunning;
+        private string _winTitle = "模拟站台显示屏";
+
+        private int _clientToken;
+        private System.Timers.Timer _heartBeatTimer = new System.Timers.Timer(60 * 1000);
 
         private TcpClient _client = null;
-
         private ObservableCollection<BusRouteInfo> _busRoutes = new ObservableCollection<BusRouteInfo>();
-
         public ObservableCollection<BusRouteInfo> BusRoutes
         {
             get { return _busRoutes; }
         }
-
         private ResponseObject _data = null;
+
+        private UInt16 _clientSquenceNO = 1;
 
         #endregion
 
@@ -76,6 +82,21 @@ namespace TestQP
             }
         }
 
+        public bool IsRunning
+        {
+            get { return _isRunning; }
+            set
+            {
+                _isRunning = value;
+                OnPropertyChanged(() => IsRunning);
+            }
+        }
+
+        public string WinTitle
+        {
+            get { return _winTitle; }
+            set { _winTitle = value; OnPropertyChanged(() => WinTitle); }
+        }
 
         #endregion
 
@@ -99,11 +120,27 @@ namespace TestQP
             InitializeEvents();
 
             InitializeData();
+
+            ConnectCommand.Execute(null);
         }
 
         private void InitializeEvents()
         {
             Provider.EventAggregator.GetEvent<TestQP.Events.Events.LogEvent>().Subscribe(DisplayLogs);
+
+            _heartBeatTimer.Elapsed += (o, e) =>
+            {
+                var message = new Message();
+                message.MessageBody = new HeartBeatBody();
+                message.Header = new MessageHeader()
+                {
+                    MessageId = FunctionEnum.CLIENT_HEART_BEAT,
+                    Token = _clientToken,
+                    SequenceNO = _clientSquenceNO
+                };
+                LogHelper.LogInfo(string.Format("时间到了，心跳一下! Token:{0}, SeqeneceNo:{1}", message.Header.Token, message.Header.SequenceNO));
+                SendMessage(message.GetMessageBytes());
+            };
         }
 
         private void InitializeCommands()
@@ -118,7 +155,11 @@ namespace TestQP
             Task.Factory.StartNew(() =>
             {
                 _data = new RestfulHelper().GetStationInfo();
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => { CurrentStationName = _data.name; }));
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    WinTitle = string.Format("模拟站台：【{0}-{1}】", _data.name, _data.identifier);
+                    CurrentStationName = _data.name;
+                }));
 
                 foreach (var item in _data.lines)
                 {
@@ -180,17 +221,43 @@ namespace TestQP
 
         private void Dowork()
         {
+            IsRunning = true;
             LogHelper.LogInfo("Begin to work...");
             Task.Factory.StartNew(() =>
             {
+                _client = null;
+
                 try
                 {
                     while (true)
                     {
-                        _client = new TcpClient(_serverAddress, _serverPort);
-                        LogHelper.LogInfo("Connected!");
+                        try
+                        {
+                            _client = new TcpClient(_serverAddress, _serverPort);
+                        }
+                        catch (Exception ex)
+                        {
+                            LogHelper.LogError(ex.Message, ex);
 
-                        SendMessage(_client, GetLoginMessage());
+                            do
+                            {
+                                LogHelper.LogInfo("连接失败，20s后尝试重连！");
+                                Thread.Sleep(20 * 1000);
+
+                                try
+                                {
+                                    _client = new TcpClient(_serverAddress, _serverPort);
+                                }
+                                catch (Exception)
+                                {
+                                    //nothing to do
+                                }
+
+                            } while (_client == null);
+                        }
+
+                        LogHelper.LogInfo("Connected!");
+                        LogOn();
 
                         NetworkStream stream = _client.GetStream();
                         Byte[] buffer = new Byte[1024];
@@ -218,7 +285,34 @@ namespace TestQP
                 finally
                 {
                 }
+
+                Application.Current.Dispatcher.Invoke(new Action(() => { IsRunning = false; }));
             });
+        }
+
+        private void LogOn()
+        {
+            SendMessage(GetLoginMessage());
+        }
+
+        private void SendGeneralAnswer(FunctionEnum function, int sequenceNo)
+        {
+            var message = new Message();
+            message.MessageBody = new ClientGeneralAnsBody()
+            {
+                AnsMessageId = function,
+                Result = MessageResultEnum.SUCCEED,
+                SequenceNO = sequenceNo
+            };
+            message.Header = new MessageHeader()
+            {
+                MessageId = FunctionEnum.CLIENT_ANS,
+                Token = _clientToken,
+                SequenceNO = _clientSquenceNO
+            };
+
+            LogHelper.LogInfo(string.Format("回复实时路线信息! Token:{0}, SeqeneceNo:{1}", message.Header.Token, message.Header.SequenceNO));
+            SendMessage(message.GetMessageBytes());
         }
 
         private byte[] GetLoginMessage()
@@ -235,11 +329,8 @@ namespace TestQP
             message.Header = new MessageHeader()
             {
                 MessageId = FunctionEnum.CLIENT_LOGON,
-                //MessageProperty = 0x0025,
-                //ProtocolVersion = 0x01,
-                //Token = 0x00,
-                // StationNo = 0x60000001,
-                SequenceNO = 0x0004
+                Token = 0x00,
+                SequenceNO = _clientSquenceNO
             };
 
             var bytes = message.GetMessageBytes();
@@ -247,10 +338,10 @@ namespace TestQP
             //return new byte[] { 0x8E, 0x06, 0x02, 0x00, 0x25, 0x01, 0x00, 0x60, 0x00, 0x00, 0x01, 0x00, 0x04, 0x46, 0x72, 0x65, 0x65, 0x52, 0x54, 0x4F, 0x53, 0x20, 0x56, 0x38, 0x2E, 0x32, 0x2E, 0x33, 0x00, 0x00, 0x00, 0x32, 0x2E, 0x30, 0x2E, 0x30, 0x37, 0x78, 0x8E };
         }
 
-        private void SendMessage(TcpClient client, byte[] msg)
+        private void SendMessage(byte[] msg)
         {
             var encodedMsg = BytesCoder.Encode(msg);
-            var stream = client.GetStream();
+            var stream = _client.GetStream();
             stream.Write(encodedMsg, 0, encodedMsg.Length);
             string data = BitConverter.ToString(encodedMsg).Replace("-", " ");
             LogHelper.LogDebug(string.Format("Sent: {0}", data));
@@ -377,9 +468,14 @@ namespace TestQP
                     case FunctionEnum.SERVER_LOGIN_ANS:
                         {
                             var body = (msg.MessageBody as ServerLogonAnsBody);
-                            LogHelper.LogInfo(string.Format("登陆成功，登录结果:{0}，服务端系统时间为：{1}",
+                            _clientToken = body.Token;
+                            LogHelper.LogInfo(string.Format("登录成功，登录结果:{0}，服务端系统时间为：{1}，Token:{2}",
                                 body.Status.ToString(),
-                               body.Time.ToString("yyyy-MM-dd HH:mm:ss")));
+                                body.Time.ToString("yyyy-MM-dd HH:mm:ss"),
+                                body.Token));
+
+                            if (body.Status == LogonResultEnmu.SUCCEED) _heartBeatTimer.Start();
+                            else _heartBeatTimer.Stop();
                         }
                         break;
                     case FunctionEnum.SERVER_REALTIME_DATA:
@@ -395,7 +491,8 @@ namespace TestQP
                             LogHelper.LogInfo(string.Format("收到服务器实时信息！路线ID：{0}，路线方向{1}，班车数量：{2},定制信息：【{3}】,详情：\r\n{4}"
                                 , body.RouteId, body.RouteDirection, body.BusCount, body.CustomedInfo, str));
 
-
+                            //Anser it
+                            SendGeneralAnswer(FunctionEnum.SERVER_REALTIME_DATA, msg.Header.SequenceNO);
                             UpdateViewData(body);
                         }
 
@@ -435,7 +532,7 @@ namespace TestQP
                         {
                             stationPoint.CurrentStationBusCount = item.StationBusCount;
                             stationPoint.BusRelativeLocation = item.IsInstation ? BusRelativeEnum.IN_STATION
-                                : item.IsPassed ? BusRelativeEnum.RIRGHT_STATION : BusRelativeEnum.LEFT_STATION;
+                                : item.IsPassed ? BusRelativeEnum.RIRGHT_STATION : BusRelativeEnum.IN_STATION;// 左侧 显示为站内
                             //stationPoint.IsBling = true;
                         }));
                     }

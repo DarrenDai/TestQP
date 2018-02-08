@@ -77,7 +77,7 @@ namespace TestQP.Sockets
         public int ProtocolVersion
         {
             get { return _header[4]; }
-            set
+            private set
             {
                 // _protocolVersion = (byte)value;
                 _header[4] = (byte)value;
@@ -103,7 +103,7 @@ namespace TestQP.Sockets
         public string StationNo
         {
             get { return _header.GetBCDStringWithOffset(6, 4); }
-            set
+            private set
             {
                 // _stationId = (UInt32)value;
                 _header.SetBCDFromStringWithOffset(value, 6);
