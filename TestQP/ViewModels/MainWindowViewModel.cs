@@ -42,7 +42,7 @@ namespace TestQP
         }
         private ResponseObject _data = null;
 
-        private UInt16 _clientSquenceNO = 1;
+        private int _clientSquenceNO = 1;
 
         #endregion
 
@@ -127,20 +127,7 @@ namespace TestQP
         private void InitializeEvents()
         {
             Provider.EventAggregator.GetEvent<TestQP.Events.Events.LogEvent>().Subscribe(DisplayLogs);
-
-            _heartBeatTimer.Elapsed += (o, e) =>
-            {
-                var message = new Message();
-                message.MessageBody = new HeartBeatBody();
-                message.Header = new MessageHeader()
-                {
-                    MessageId = FunctionEnum.CLIENT_HEART_BEAT,
-                    Token = _clientToken,
-                    SequenceNO = _clientSquenceNO
-                };
-                LogHelper.LogInfo(string.Format("时间到了，心跳一下! Token:{0}, SeqeneceNo:{1}", message.Header.Token, message.Header.SequenceNO));
-                SendMessage(message.GetMessageBytes());
-            };
+            _heartBeatTimer.Elapsed += (o, e) => { HeartBeat(); };
         }
 
         private void InitializeCommands()
@@ -290,9 +277,38 @@ namespace TestQP
             });
         }
 
+        private void HeartBeat()
+        {
+            var message = new Message();
+            message.MessageBody = new HeartBeatBody();
+            message.Header = new MessageHeader()
+            {
+                MessageId = FunctionEnum.CLIENT_HEART_BEAT,
+                Token = _clientToken,
+                SequenceNO = Interlocked.Increment(ref _clientSquenceNO) 
+            };
+
+            LogHelper.LogInfo(string.Format("时间到了，心跳一下! Token:{0}, SeqeneceNo:{1}", message.Header.Token, message.Header.SequenceNO));
+            SendMessage(message.GetMessageBytes());
+        }
+
         private void LogOn()
         {
-            SendMessage(GetLoginMessage());
+            var message = new Message();
+            message.MessageBody = new ClientLogonBody()
+            {
+                Password = "123456",
+                RuntimeVersion = "Android 5.1.1",
+                FrontEndVersion = "1.0.0"
+            };
+            message.Header = new MessageHeader()
+            {
+                MessageId = FunctionEnum.CLIENT_LOGON,
+                Token = 0x00,
+                SequenceNO = Interlocked.Increment(ref _clientSquenceNO)
+            };
+            LogHelper.LogInfo(string.Format("赶紧登录一下! Token:{0}, SeqeneceNo:{1}", message.Header.Token, message.Header.SequenceNO));
+            SendMessage(message.GetMessageBytes());
         }
 
         private void SendGeneralAnswer(FunctionEnum function, int sequenceNo)
@@ -308,34 +324,11 @@ namespace TestQP
             {
                 MessageId = FunctionEnum.CLIENT_ANS,
                 Token = _clientToken,
-                SequenceNO = _clientSquenceNO
+                SequenceNO = 0
             };
 
-            LogHelper.LogInfo(string.Format("回复实时路线信息! Token:{0}, SeqeneceNo:{1}", message.Header.Token, message.Header.SequenceNO));
+            LogHelper.LogInfo(string.Format("回复实时路线信息! Token:{0}, SeqeneceNo:{1}", message.Header.Token, sequenceNo));
             SendMessage(message.GetMessageBytes());
-        }
-
-        private byte[] GetLoginMessage()
-        {
-            var message = new Message();
-            message.MessageBody = new ClientLogonBody()
-            {
-                Password = "123456",
-                RuntimeVersion = "Android 5.1.1",
-                FrontEndVersion = "1.0.0"
-            };
-            //var loginBytes = new byte[] { 0x46, 0x72, 0x65, 0x65, 0x52, 0x54, 0x4F, 0x53, 0x20, 0x56, 0x38, 0x2E, 0x32, 0x2E, 0x33, 0x00, 0x00, 0x00, 0x32, 0x2E, 0x30, 0x2E, 0x30, 0x37 };
-            //message.MessageBody.FromBytes(loginBytes);
-            message.Header = new MessageHeader()
-            {
-                MessageId = FunctionEnum.CLIENT_LOGON,
-                Token = 0x00,
-                SequenceNO = _clientSquenceNO
-            };
-
-            var bytes = message.GetMessageBytes();
-            return bytes;
-            //return new byte[] { 0x8E, 0x06, 0x02, 0x00, 0x25, 0x01, 0x00, 0x60, 0x00, 0x00, 0x01, 0x00, 0x04, 0x46, 0x72, 0x65, 0x65, 0x52, 0x54, 0x4F, 0x53, 0x20, 0x56, 0x38, 0x2E, 0x32, 0x2E, 0x33, 0x00, 0x00, 0x00, 0x32, 0x2E, 0x30, 0x2E, 0x30, 0x37, 0x78, 0x8E };
         }
 
         private void SendMessage(byte[] msg)
