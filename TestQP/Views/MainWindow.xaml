@@ -35,7 +35,7 @@
                           RepeatBehavior="Forever" />
                 </Storyboard>
             </DataTemplate.Resources>
-            <Grid Margin="2">
+            <Grid Margin="8 14 8 0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -54,17 +54,31 @@
                         </Style>
                     </Ellipse.Style>
                 </Ellipse>
+
+                <Image x:Name="busImage" Visibility="Collapsed" Source="/TestQP;component/Images/bus.png" Width="17"/>
+
                 <TextBlock x:Name="stopText" Grid.Row="1" Text="{Binding Name}" TextWrapping="Wrap" Width="12" FontSize="12"/>
             </Grid>
             <DataTemplate.Triggers>
-                <DataTrigger Binding="{Binding IsBling}" Value="True">
+                <DataTrigger Binding="{Binding BusRelativeLocation}" Value="1">
+                    <Setter Property="Visibility" Value="Visible" TargetName="busImage"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding BusRelativeLocation}" Value="2">
+                    <Setter Property="Visibility" Value="Visible" TargetName="busImage"/>
+                    <Setter Property="Margin" Value="-30 -8 0 0" TargetName="busImage"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding BusRelativeLocation}" Value="3">
+                    <Setter Property="Visibility" Value="Visible" TargetName="busImage"/>
+                    <Setter Property="Margin" Value="0 -8 -30 0" TargetName="busImage"/>
+                </DataTrigger>
+                <!--<DataTrigger Binding="{Binding IsBling}" Value="True">
                     <DataTrigger.EnterActions>
                         <BeginStoryboard x:Name="bilingStoryInstance" Storyboard="{StaticResource BlingStory}"/>
                     </DataTrigger.EnterActions>
                     <DataTrigger.ExitActions>
                         <RemoveStoryboard BeginStoryboardName="bilingStoryInstance"/>
                     </DataTrigger.ExitActions>
-                </DataTrigger>
+                </DataTrigger>-->
                 <!--<DataTrigger Binding="{Binding IsBling}" Value="True">
                     <Setter Property="Foreground" Value="Red" TargetName="stopText"/>
                     <Setter Property="Fill" Value="Red" TargetName="stopEllipse"/>
@@ -130,7 +144,7 @@
                                             <TextBlock Grid.Row="4" Text="{Binding EndStationTimeRange}" Margin="20 5 0 5"/>
                                         </Grid>
                                         <Grid Grid.Column="1" Background="#FF0566D9">
-                                            <Border Background="White" Height="4" Margin="5 10" VerticalAlignment="Top"/>
+                                            <Border Background="White" Height="4" Margin="5 22" VerticalAlignment="Top"/>
                                             <ListBox ItemsSource="{Binding Stations}" VerticalAlignment="Stretch" Background="Transparent"
                                                      IsHitTestVisible="False"
                                                      VerticalContentAlignment="Top" ItemTemplate="{StaticResource StopDataTempate}">

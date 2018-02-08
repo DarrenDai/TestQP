@@ -22,7 +22,10 @@ namespace TestQP.Utils
 
         private string DoHttpGet(string content)
         {
-            string url = string.Format("http://120.26.45.101:30020/publish/device/info?identifier={0}", ConfigurationManager.AppSettings["StationId"]);
+            string url = string.Format("http://{0}:{1}/publish/device/info?identifier={2}",
+                ConfigurationManager.AppSettings["ServerAddress"],
+                ConfigurationManager.AppSettings["WebAPIPort"],
+                ConfigurationManager.AppSettings["StationId"]);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = WebRequestMethods.Http.Get;
             request.Timeout = 30 * 1000;

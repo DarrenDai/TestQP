@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TestQP.Constants;
+using TestQP.Constants.Enums;
 using TestQP.Models;
 using TestQP.Sockets;
 using TestQP.Sockets.BodyDefinitions;
@@ -416,7 +417,12 @@ namespace TestQP
 
                 foreach (var item in routeInfo.Stations)
                 {
-                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => { item.IsBling = false; }));
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        item.CurrentStationBusCount = 0;
+                        item.BusRelativeLocation = BusRelativeEnum.NO_BUS;
+                        // item.IsBling = false;
+                    }));
                 }
 
                 foreach (var item in locations)
@@ -425,7 +431,13 @@ namespace TestQP
                     var stationPoint = routeInfo.Stations.FirstOrDefault(x => x.Order == item.StationNo);
                     if (stationPoint != null)
                     {
-                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => { stationPoint.IsBling = true; }));
+                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            stationPoint.CurrentStationBusCount = item.StationBusCount;
+                            stationPoint.BusRelativeLocation = item.IsInstation ? BusRelativeEnum.IN_STATION
+                                : item.IsPassed ? BusRelativeEnum.RIRGHT_STATION : BusRelativeEnum.LEFT_STATION;
+                            //stationPoint.IsBling = true;
+                        }));
                     }
                 }
             }

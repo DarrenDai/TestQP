@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestQP.Constants.Enums;
 
 namespace TestQP.Models
 {
@@ -12,8 +13,28 @@ namespace TestQP.Models
         private bool _isBling;
         private int _order;
         private bool _isCurrentStation;
+        private int _currentStationBusCount;
+        private BusRelativeEnum _busRelativeLocation;
 
-        //private bool _is
+        public int CurrentStationBusCount
+        {
+            get { return _currentStationBusCount; }
+            set
+            {
+                _currentStationBusCount = value;
+                OnPropertyChanged(() => CurrentStationBusCount);
+            }
+        }
+
+        public BusRelativeEnum BusRelativeLocation
+        {
+            get { return _busRelativeLocation; }
+            set
+            {
+                _busRelativeLocation = value;
+                OnPropertyChanged(() => BusRelativeLocation);
+            }
+        }
 
         public string Name
         {

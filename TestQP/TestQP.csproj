@@ -77,6 +77,7 @@
     </Compile>
     <Compile Include="Constants\Constants.cs" />
     <Compile Include="Constants\EncrptMethodEnum.cs" />
+    <Compile Include="Constants\Enums\BusRelativeEnum.cs" />
     <Compile Include="Constants\Enums\FunctionEnum.cs" />
     <Compile Include="Constants\Enums\LogonResultEnmu.cs" />
     <Compile Include="Constants\Enums\MessageResultEnum.cs" />
@@ -146,6 +147,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="TempNotes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\bus.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
