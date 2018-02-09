@@ -86,7 +86,7 @@
     <Compile Include="Converters\ByteConverter.cs" />
     <Compile Include="Events\Events.cs" />
     <Compile Include="Extensions\ByteAarryExtensions.cs" />
-    <Compile Include="Models\BusLocationInfo.cs" />
+    <Compile Include="Models\BusRealTimeLocation.cs" />
     <Compile Include="Models\BusRouteInfo.cs" />
     <Compile Include="Models\StationPoint.cs" />
     <Compile Include="Services\Class1.cs" />

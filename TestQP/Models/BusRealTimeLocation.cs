@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TestQP.Models
 {
-    public class BusLocationInfo : NotifyObject
+    public class BusRealTimeLocation : NotifyObject
     {
         private int _stationNo;
         private bool _isInstation;
@@ -43,14 +43,5 @@ namespace TestQP.Models
             get { return _isBling; }
             set { _isBling = value; OnPropertyChanged(() => IsBling); }
         }
-
-        //private string _customedString;
-
-        //public string CustomedString
-        //{
-        //    get { return _customedString; }
-        //    set { _customedString = value; OnPropertyChanged(() => CustomedString); }
-        //}
-
     }
 }

@@ -497,6 +497,7 @@ namespace TestQP
             if (routeInfo != null)
             {
                 routeInfo.CustomedInfo = body.CustomedInfo;
+                routeInfo.BusCount = body.BusCount;
 
                 foreach (var item in routeInfo.Stations)
                 {

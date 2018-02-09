@@ -55,7 +55,7 @@ namespace TestQP.Sockets.BodyDefinitions
         /// <summary>
         /// 车辆位置[n]
         /// </summary>
-        public List<BusLocationInfo> BusLocations
+        public List<BusRealTimeLocation> BusLocations
         {
             //每一辆车由2个字节表示，其结构如下：
             //第1个字节：
@@ -76,11 +76,11 @@ namespace TestQP.Sockets.BodyDefinitions
             //第5站的位置有2辆车，且该位置是当前站。
             get
             {
-                var buses = new List<BusLocationInfo>();
+                var buses = new List<BusRealTimeLocation>();
                 for (int i = 6; i < BusCount * 2 + 6; i = i + 2)
                 {
                     byte location = _bodyBytes[i + 1];
-                    var temp = new BusLocationInfo();
+                    var temp = new BusRealTimeLocation();
 
                     temp.StationNo = (int)_bodyBytes[i];
 
