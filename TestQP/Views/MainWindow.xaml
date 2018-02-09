@@ -174,10 +174,13 @@
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Text="距离本站" HorizontalAlignment="Left"/>
                         <TextBlock Grid.Row="1" Text="{Binding CustomedInfo}" FontSize="35"/>
-                        <StackPanel Grid.Row="2" Orientation="Horizontal">
-                            <TextBlock Text="车辆数：" FontSize="16"/>
-                            <TextBlock Text="{Binding BusCount}" FontSize="16"/>
-                        </StackPanel>
+                        <TextBlock Grid.Row="2" FontSize="16">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}车辆数：{0}">
+                                    <Binding Path="BusCount" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
                     </Grid>
                 </Grid>
             </Border>
