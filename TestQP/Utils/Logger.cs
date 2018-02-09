@@ -42,7 +42,7 @@ namespace TestQP.Utils
             if (_logger.IsDebugEnabled)
             {
                 _logger.Debug(message);
-                Provider.EventAggregator.GetEvent<TestQP.Events.Events.LogEvent>().Publish(message);
+                LogToUI(message);
             }
         }
 
@@ -51,7 +51,7 @@ namespace TestQP.Utils
             if (_logger.IsInfoEnabled)
             {
                 _logger.Info(message);
-                Provider.EventAggregator.GetEvent<TestQP.Events.Events.LogEvent>().Publish(message);
+                LogToUI(message);
             }
         }
 
@@ -60,13 +60,18 @@ namespace TestQP.Utils
             if (_logger.IsErrorEnabled)
             {
                 _logger.Error(message, ex);
-                Provider.EventAggregator.GetEvent<TestQP.Events.Events.LogEvent>().Publish(message);
+                LogToUI(message);
             }
         }
 
         #endregion
 
         #region Private methods
+
+        private static void LogToUI(string message)
+        {
+            Provider.EventAggregator.GetEvent<TestQP.Events.Events.LogEvent>().Publish(message);
+        }
 
         #endregion
     }
