@@ -214,8 +214,6 @@ namespace TestQP
             LogHelper.LogInfo("Begin to work...");
             Task.Factory.StartNew(() =>
             {
-
-
                 try
                 {
                     while (true)
