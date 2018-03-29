@@ -44,6 +44,8 @@ namespace TestQP
 
         private int _clientSquenceNO = 1;
 
+        private CancellationToken _cancelToken = new CancellationToken();
+
         #endregion
 
         #region Constructor
@@ -212,12 +214,14 @@ namespace TestQP
             LogHelper.LogInfo("Begin to work...");
             Task.Factory.StartNew(() =>
             {
-                _client = null;
+
 
                 try
                 {
                     while (true)
                     {
+                        _client = null;
+
                         try
                         {
                             _client = new TcpClient(_serverAddress, _serverPort);
@@ -225,42 +229,40 @@ namespace TestQP
                         catch (Exception ex)
                         {
                             LogHelper.LogError(ex.Message, ex);
+                        }
 
-                            do
-                            {
-                                LogHelper.LogInfo("连接失败，20s后尝试重连！");
-                                Thread.Sleep(20 * 1000);
-
-                                try
-                                {
-                                    _client = new TcpClient(_serverAddress, _serverPort);
-                                }
-                                catch (Exception)
-                                {
-                                    //nothing to do
-                                }
-
-                            } while (_client == null);
+                        if (_client == null)
+                        {
+                            LogHelper.LogInfo("连接失败，20s后尝试重连！");
+                            Thread.Sleep(20 * 1000);
+                            continue;
                         }
 
                         LogHelper.LogInfo("Connected!");
                         LogOn();
 
-                        NetworkStream stream = _client.GetStream();
-                        Byte[] buffer = new Byte[1024];
-                        string data = string.Empty;
-                        int count = 0;
-
-                        //// Loop to receive all the data sent by the server.
-                        while ((count = stream.Read(buffer, 0, buffer.Length)) != 0)
+                        if (!_client.Connected)
                         {
-                            byte[] msg = new byte[count];
-                            Array.Copy(buffer, msg, count);
-                            Task.Factory.StartNew(ConsumeMessage, msg);
+                            LogHelper.LogInfo("登录失败，请检查登录密码后重试！");
                         }
+                        else
+                        {
+                            NetworkStream stream = _client.GetStream();
+                            Byte[] buffer = new Byte[1024];
+                            string data = string.Empty;
+                            int count = 0;
 
-                        stream.Close();
-                        _client.Close();
+                            //// Loop to receive all the data sent by the server.
+                            while ((count = stream.Read(buffer, 0, buffer.Length)) != 0)
+                            {
+                                byte[] msg = new byte[count];
+                                Array.Copy(buffer, msg, count);
+                                Task.Factory.StartNew(ConsumeMessage, msg);
+                            }
+
+                            stream.Close();
+                            _client.Close();
+                        }
 
                         LogHelper.LogInfo("Client closed!");
                     }
@@ -279,6 +281,8 @@ namespace TestQP
 
         private void HeartBeat()
         {
+            if (_client == null || !_client.Connected) return;
+
             var message = new Message();
             message.MessageBody = new HeartBeatBody();
             message.Header = new MessageHeader()
@@ -294,6 +298,8 @@ namespace TestQP
 
         private void LogOn()
         {
+            if (_client == null || !_client.Connected) return;
+
             var message = new Message();
             message.MessageBody = new ClientLogonBody()
             {
@@ -333,6 +339,8 @@ namespace TestQP
 
         private void SendMessage(byte[] msg)
         {
+            if (_client == null || !_client.Connected) return;
+
             var encodedMsg = BytesCoder.Encode(msg);
             var stream = _client.GetStream();
             stream.Write(encodedMsg, 0, encodedMsg.Length);
