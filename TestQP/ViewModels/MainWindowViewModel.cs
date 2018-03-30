@@ -44,7 +44,7 @@ namespace TestQP
 
         private int _clientSquenceNO = 1;
 
-        private CancellationToken _cancelToken = new CancellationToken();
+        private CancellationTokenSource _cancelToken = new CancellationTokenSource();
 
         #endregion
 
@@ -62,6 +62,11 @@ namespace TestQP
         public string CurrentStationId
         {
             get { return _currentStationId; }
+            set
+            {
+                _currentStationId = value;
+                OnPropertyChanged(() => CurrentStationId);
+            }
         }
 
         public string CurrentStationName
@@ -121,7 +126,7 @@ namespace TestQP
 
             InitializeEvents();
 
-            InitializeData();
+           // InitializeData();
 
             ConnectCommand.Execute(null);
         }
@@ -143,11 +148,13 @@ namespace TestQP
         {
             Task.Factory.StartNew(() =>
             {
-                _data = new RestfulHelper().GetStationInfo();
+                _data = new RestfulHelper().GetStationInfo(CurrentStationId);
                 System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
                     WinTitle = string.Format("模拟站台：【{0}-{1}】", _data.name, _data.identifier);
                     CurrentStationName = _data.name;
+
+                    BusRoutes.Clear();
                 }));
 
                 foreach (var item in _data.lines)
@@ -180,6 +187,7 @@ namespace TestQP
                     System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
                         BusRoutes.Add(routeInfo);
+                       // OnPropertyChanged(()=> BusRoutes);
                     }));
                 }
             });
@@ -196,12 +204,13 @@ namespace TestQP
 
         public void OnDisConnect(object payload)
         {
-
+            _cancelToken.Cancel();
+            HeartBeat();
         }
 
         public void OnHeartBeat(object payload)
         {
-
+            HeartBeat();
         }
 
         #endregion
@@ -210,14 +219,25 @@ namespace TestQP
 
         private void Dowork()
         {
+            _cancelToken = new CancellationTokenSource();
             IsRunning = true;
             LogHelper.LogInfo("Begin to work...");
+          
+
             Task.Factory.StartNew(() =>
             {
                 try
                 {
+                    InitializeData();
+
                     while (true)
                     {
+                        if (_cancelToken.IsCancellationRequested)
+                        {
+                            LogHelper.LogInfo("Client disconnect requested!");
+                            break;
+                        }
+
                         _client = null;
 
                         try
@@ -256,6 +276,8 @@ namespace TestQP
                                 byte[] msg = new byte[count];
                                 Array.Copy(buffer, msg, count);
                                 Task.Factory.StartNew(ConsumeMessage, msg);
+
+                                if (_cancelToken.IsCancellationRequested) break;
                             }
 
                             stream.Close();
@@ -274,7 +296,7 @@ namespace TestQP
                 }
 
                 Application.Current.Dispatcher.Invoke(new Action(() => { IsRunning = false; }));
-            });
+            }, _cancelToken.Token);
         }
 
         private void HeartBeat()
